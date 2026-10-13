@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BSc Artificial Intelligence · Interactive Overview</title>
+<style>
+:root{--trunk:#E8EEF7;--shared:#C7D6EA;--ai:#9ED6CE;--adv:#5BBFB2;--flag:#0E616E;--gold:#C9A227;--navy:#1F3864;--ink:#102A4C;--mut:#64748B}
+*{box-sizing:border-box}
+body{font-family:"Segoe UI",Helvetica,Arial,sans-serif;margin:0;background:linear-gradient(160deg,#06231A 0%,#0B4030 55%,#0E6148 130%);color:#fff;min-height:100vh}
+.wrap{max-width:1320px;margin:0 auto;padding:40px 28px 80px}
+header h1{font-size:34px;margin:0 0 6px}
+header .sub{color:#BFD8CC;font-size:15px}
+.legend{margin:16px 0 8px;display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:#D4E6DC}
+.dot{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+section{margin-top:52px}
+h2{font-size:24px;color:#F3D27A;margin:0 0 4px}
+.hint{color:#BFD8CC;font-size:13px;margin:0 0 20px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.tile{flex:1 1 140px;min-width:135px;border:none;border-radius:14px;padding:14px 10px;cursor:pointer;font:inherit;font-weight:700;font-size:13.5px;line-height:1.35;color:var(--ink);transition:transform .25s,box-shadow .25s;position:relative;text-align:center}
+.tile small{display:block;font-weight:400;font-size:11px;opacity:.85;margin-top:4px}
+.tile:hover{transform:translateY(-5px);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.tile.active{outline:3px solid #F3D27A;transform:translateY(-5px) scale(1.03);box-shadow:0 12px 28px rgba(0,0,0,.45)}
+.tile .num{position:absolute;top:6px;right:9px;font-size:10px;opacity:.6;font-weight:400}
+.arrow{align-self:center;color:#F3D27A;font-size:20px;flex:0 0 auto;user-select:none}
+.drawer{overflow:hidden;max-height:0;opacity:0;transition:max-height .55s ease,opacity .45s ease;margin-top:16px}
+.drawer.open{max-height:900px;opacity:1}
+.sublabel{color:#F3D27A;font-size:13px;font-weight:700;margin:4px 0 10px;letter-spacing:.04em}
+.subrow{display:flex;flex-wrap:wrap;gap:10px}
+.subrow .tile{flex:1 1 180px;animation:fadeIn .45s both}
+.subrow .tile:nth-child(1){animation-delay:.05s}.subrow .tile:nth-child(2){animation-delay:.12s}.subrow .tile:nth-child(3){animation-delay:.19s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.detail{overflow:hidden;max-height:0;opacity:0;transition:max-height .55s ease,opacity .45s ease;margin-top:14px}
+.detail.open{max-height:760px;opacity:1}
+.detail-inner{background:rgba(255,255,255,.97);color:var(--ink);border-radius:16px;padding:24px 26px;box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.detail-inner h3{margin:0 0 4px;color:var(--navy);font-size:20px}
+.detail-inner .en{color:var(--mut);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 10px}
+.chip{border-radius:9px;padding:7px 12px;font-size:12.8px;font-weight:600;color:var(--ink);animation:pop .4s both}
+.chip.white{color:#fff}
+.chips .chip:nth-child(1){animation-delay:.03s}.chips .chip:nth-child(2){animation-delay:.08s}
+.chips .chip:nth-child(3){animation-delay:.13s}.chips .chip:nth-child(4){animation-delay:.18s}
+.chips .chip:nth-child(5){animation-delay:.23s}.chips .chip:nth-child(6){animation-delay:.28s}
+.chips .chip:nth-child(7){animation-delay:.33s}.chips .chip:nth-child(8){animation-delay:.38s}
+@keyframes pop{from{transform:translateY(10px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+.gain{background:#F6F1DF;border-left:4px solid var(--gold);padding:10px 14px;border-radius:8px;font-size:13.5px;margin-top:10px}
+.mapcard{background:rgba(255,255,255,.98);border-radius:16px;padding:14px;box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.mapbar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.mapbar button{border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:14px;cursor:pointer;background:#1F3864;color:#fff}
+.mapbar button:hover{background:#0E616E}
+.mapbar .z{min-width:52px;text-align:center;color:#334155;font-weight:700;font-size:13px}
+.mapviewport{height:74vh;overflow:auto;border-radius:10px;background:#fff}
+#mapInner svg{display:block}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:16px}
+.bcard{background:rgba(255,255,255,.97);color:var(--ink);border-radius:16px;padding:20px 20px 16px;transform:translateY(16px);opacity:0;transition:transform .6s ease,opacity .6s ease}
+.bcard.show{transform:none;opacity:1}
+.bcard h3{margin:0;color:var(--navy);font-size:18px}
+.bcard .tag{font-size:11px;color:var(--mut);letter-spacing:.06em;margin-bottom:10px}
+.bcard h4{font-size:13px;margin:12px 0 6px;color:#0E616E}
+.bcard h4.diff{color:#9A740B}
+.bcard ul{margin:0;padding-left:18px;font-size:12.8px;line-height:1.7;color:#27405F}
+.abet{margin-top:26px;background:linear-gradient(135deg,#C9A227,#9A740B);border-radius:18px;padding:26px 28px;color:#1A1403;transform:scale(.96);opacity:0;transition:all .7s ease}
+.abet.show{transform:none;opacity:1}
+.abet h3{margin:0 0 8px;font-size:22px;color:#241B04}
+.abet p{margin:0 0 12px;font-size:14.5px;line-height:1.8}
+.abet .map{display:flex;flex-wrap:wrap;gap:8px}
+.abet .m{background:rgba(255,255,255,.92);border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:700;color:#1F3864}
+
+.modal{position:fixed;inset:0;background:rgba(10,20,40,.72);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:5vh 16px}
+.modal.open{display:flex}
+.modal-card{background:#fff;color:var(--ink);border-radius:18px;max-width:860px;width:100%;max-height:88vh;overflow:auto;padding:28px 30px;box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative}
+.modal-card h3{margin:0 0 2px;color:var(--navy);font-size:22px}
+.modal-card .meta{color:#0E616E;font-weight:700;font-size:12.5px;margin-bottom:14px}
+.modal-card h4{font-size:12.5px;color:#0E616E;margin:12px 0 4px;text-transform:uppercase;letter-spacing:.05em}
+.modal-card p{margin:0;font-size:13px;line-height:1.75;color:#27405F}
+.modal-close{position:absolute;top:14px;right:16px;border:none;background:#1F3864;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer}
+.note{background:#F6F1DF;border-left:4px solid #C9A227;padding:8px 12px;border-radius:8px;font-size:12.5px;margin-top:10px;color:#4b3d10}
+#mapInner g.node{cursor:pointer}
+#mapInner g.node:hover ellipse,#mapInner g.node:hover polygon,#mapInner g.node:hover path{stroke:#C9A227;stroke-width:3px}
+footer{margin-top:60px;color:#8FA3C8;font-size:11.5px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div style="display:flex;align-items:center;justify-content:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:18px">
+<span style="background:#fff;border-radius:12px;padding:10px 16px;display:inline-flex;align-items:center;max-width:100%;box-shadow:0 6px 18px rgba(0,0,0,.25)"><img src="data:image/png;base64,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" alt="FCIT, King Abdulaziz University" style="height:auto;max-height:34px;width:auto;max-width:100%;display:block"></span>
+</div>
+  <h1>BSc Artificial Intelligence</h1>
+  <div class="sub">Faculty of Computing &amp; Information Technology · King Abdulaziz University · 150 credit hours · 10 semesters</div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--trunk)"></i>Common trunk</span>
+    <span><i class="dot" style="background:var(--shared)"></i>Shared CS course</span>
+    <span><i class="dot" style="background:var(--ai)"></i>AI-coded</span>
+    <span><i class="dot" style="background:var(--adv)"></i>AI advanced</span>
+    <span><i class="dot" style="background:var(--flag)"></i>Signature</span>
+    <span><i class="dot" style="background:var(--gold)"></i>Training</span>
+    <span><i class="dot" style="background:var(--navy)"></i>Capstone / Delivery</span>
+  </div>
+</header>
+
+<section>
+<div style="background:linear-gradient(135deg,#07301F,#0E6148);border:1px solid rgba(201,162,39,.45);border-radius:18px;padding:40px 48px;box-shadow:0 18px 50px rgba(0,0,0,.35)">
+<div style="max-width:940px;margin:0 auto">
+<div style="color:#C9A227;font-weight:800;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase">Vision 2030 · National Strategy for Data and AI</div>
+<div style="width:64px;height:3px;background:#C9A227;border-radius:2px;margin:12px 0 18px"></div>
+<h2 style="color:#fff;font-size:28px;margin:0 0 20px;line-height:1.4;max-width:860px">Preparing AI talent for Saudi Arabia's future</h2>
+<p style="color:#D9E9E0;font-size:14.5px;line-height:2;margin:0 0 16px;max-width:860px">
+The proposed Bachelor of Science in Artificial Intelligence at King Abdulaziz University's Faculty of Computing and Information Technology (FCIT) is designed to contribute to the ambitions of Saudi Vision 2030 and the National Strategy for Data and AI. It offers a dedicated pathway for preparing graduates with the technical expertise, practical experience, and understanding of responsible AI needed to support the Kingdom's digital transformation.
+</p>
+<p style="color:#D9E9E0;font-size:14.5px;line-height:2;margin:0 0 16px;max-width:860px">
+Building on KAU's established computing foundation, the proposed curriculum includes 14 dedicated AI courses. Its design draws on benchmarking against selected programs at Carnegie Mellon University, MIT, the National University of Singapore, and Alfaisal University. These comparisons inform the program's academic depth and progression, while its emphasis on Arabic-language applications and local challenges reflects the Saudi context. The curriculum is also designed with relevant national and international accreditation requirements in view.
+</p>
+<p style="color:#D9E9E0;font-size:14.5px;line-height:2;margin:0 0 24px;max-width:860px">
+Students will progress from computing and mathematical foundations to designing, evaluating, and deploying AI systems. Responsible AI, Arabic-language capabilities, mandatory field training, and a deployment-focused capstone project connect academic learning with practical application.
+</p>
+<div style="background:rgba(201,162,39,.12);border-left:4px solid #C9A227;border-radius:0;padding:16px 22px;max-width:860px">
+<p style="color:#fff;font-size:14.5px;line-height:2;margin:0;font-weight:600">
+The program aims to prepare graduates who can translate AI methods into useful, responsible products and systems, equipped to contribute to Saudi industry, public-sector innovation, and research.
+</p>
+</div>
+</div>
+</div>
+</section>
+
+<section>
+  <h2>The Journey: click a year, then a level</h2>
+  <p class="hint">Map 1: five years &nbsp;&rarr;&nbsp; Map 2: its levels &nbsp;&rarr;&nbsp; course details</p>
+  <div class="row" id="years"></div>
+  <div class="drawer" id="stageDrawer">
+    <div class="sublabel" id="stageLabel"></div>
+    <div class="subrow" id="stageRow"></div>
+    <div class="detail" id="detail"><div class="detail-inner" id="detailInner"></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Map 3: Full Course Map with Prerequisites</h2>
+  <p class="hint">Every course inside its semester band · arrows = prerequisites (dashed = co-requisite)</p>
+  <div class="mapcard">
+  <div class="mapbar">
+    <button onclick="zoomMap(-1)">−</button>
+    <span class="z" id="zoomVal">Fit</span>
+    <button onclick="zoomMap(1)">+</button>
+    <button onclick="zoomFit()" style="background:#C9A227;color:#241B04">Fit</button>
+    <button onclick="zoom100()" style="background:#5BBFB2">100%</button>
+  </div>
+  <div class="mapviewport" id="mapViewport"><div id="mapInner"><svg width="100%" 
+ viewBox="0.00 0.00 1400.00 1485.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1481)">
+<title>M3</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-1481 1396,-1481 1396,4 -4,4"/>
+<g id="clust1" class="cluster">
+<title>cluster_s1</title>
+<path fill="#fdfbe8" stroke="#d9d2bf" d="M331,-1358C331,-1358 958,-1358 958,-1358 964,-1358 970,-1364 970,-1370 970,-1370 970,-1457 970,-1457 970,-1463 964,-1469 958,-1469 958,-1469 331,-1469 331,-1469 325,-1469 319,-1463 319,-1457 319,-1457 319,-1370 319,-1370 319,-1364 325,-1358 331,-1358"/>
+<text text-anchor="middle" x="381" y="-1451.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 1</text>
+</g>
+<g id="clust3" class="cluster">
+<title>cluster_s2</title>
+<path fill="#f4f0fa" stroke="#d9d2bf" d="M202,-1223C202,-1223 779,-1223 779,-1223 785,-1223 791,-1229 791,-1235 791,-1235 791,-1322 791,-1322 791,-1328 785,-1334 779,-1334 779,-1334 202,-1334 202,-1334 196,-1334 190,-1328 190,-1322 190,-1322 190,-1235 190,-1235 190,-1229 196,-1223 202,-1223"/>
+<text text-anchor="middle" x="252" y="-1316.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 2</text>
+</g>
+<g id="clust5" class="cluster">
+<title>cluster_s3</title>
+<path fill="#fff4ec" stroke="#d9d2bf" d="M30,-1088C30,-1088 689,-1088 689,-1088 695,-1088 701,-1094 701,-1100 701,-1100 701,-1187 701,-1187 701,-1193 695,-1199 689,-1199 689,-1199 30,-1199 30,-1199 24,-1199 18,-1193 18,-1187 18,-1187 18,-1100 18,-1100 18,-1094 24,-1088 30,-1088"/>
+<text text-anchor="middle" x="154" y="-1181.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 3 · entry to AI major</text>
+</g>
+<g id="clust7" class="cluster">
+<title>cluster_s4</title>
+<path fill="#eaf6f4" stroke="#d9d2bf" d="M397,-953C397,-953 1085,-953 1085,-953 1091,-953 1097,-959 1097,-965 1097,-965 1097,-1052 1097,-1052 1097,-1058 1091,-1064 1085,-1064 1085,-1064 397,-1064 397,-1064 391,-1064 385,-1058 385,-1052 385,-1052 385,-965 385,-965 385,-959 391,-953 397,-953"/>
+<text text-anchor="middle" x="447" y="-1046.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 4</text>
+</g>
+<g id="clust9" class="cluster">
+<title>cluster_s5</title>
+<path fill="#eef3fb" stroke="#d9d2bf" d="M20,-818C20,-818 760,-818 760,-818 766,-818 772,-824 772,-830 772,-830 772,-917 772,-917 772,-923 766,-929 760,-929 760,-929 20,-929 20,-929 14,-929 8,-923 8,-917 8,-917 8,-830 8,-830 8,-824 14,-818 20,-818"/>
+<text text-anchor="middle" x="70" y="-911.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 5</text>
+</g>
+<g id="clust11" class="cluster">
+<title>cluster_s6</title>
+<path fill="#eaf6f4" stroke="#d9d2bf" d="M433,-683C433,-683 1125,-683 1125,-683 1131,-683 1137,-689 1137,-695 1137,-695 1137,-782 1137,-782 1137,-788 1131,-794 1125,-794 1125,-794 433,-794 433,-794 427,-794 421,-788 421,-782 421,-782 421,-695 421,-695 421,-689 427,-683 433,-683"/>
+<text text-anchor="middle" x="483" y="-776.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 6</text>
+</g>
+<g id="clust13" class="cluster">
+<title>cluster_s7</title>
+<path fill="#eef3fb" stroke="#d9d2bf" d="M463,-548C463,-548 1236,-548 1236,-548 1242,-548 1248,-554 1248,-560 1248,-560 1248,-647 1248,-647 1248,-653 1242,-659 1236,-659 1236,-659 463,-659 463,-659 457,-659 451,-653 451,-647 451,-647 451,-560 451,-560 451,-554 457,-548 463,-548"/>
+<text text-anchor="middle" x="513" y="-641.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 7</text>
+</g>
+<g id="clust15" class="cluster">
+<title>cluster_s8</title>
+<path fill="#eaf6f4" stroke="#d9d2bf" d="M584,-413C584,-413 1372,-413 1372,-413 1378,-413 1384,-419 1384,-425 1384,-425 1384,-512 1384,-512 1384,-518 1378,-524 1372,-524 1372,-524 584,-524 584,-524 578,-524 572,-518 572,-512 572,-512 572,-425 572,-425 572,-419 578,-413 584,-413"/>
+<text text-anchor="middle" x="634" y="-506.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 8</text>
+</g>
+<g id="clust17" class="cluster">
+<title>cluster_su</title>
+<path fill="#fbf4dc" stroke="#d9d2bf" d="M434,-278C434,-278 674,-278 674,-278 680,-278 686,-284 686,-290 686,-290 686,-377 686,-377 686,-383 680,-389 674,-389 674,-389 434,-389 434,-389 428,-389 422,-383 422,-377 422,-377 422,-290 422,-290 422,-284 428,-278 434,-278"/>
+<text text-anchor="middle" x="552" y="-371.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SUMMER · mandatory training</text>
+</g>
+<g id="clust19" class="cluster">
+<title>cluster_s9</title>
+<path fill="#eef3fb" stroke="#d9d2bf" d="M61,-143C61,-143 712,-143 712,-143 718,-143 724,-149 724,-155 724,-155 724,-242 724,-242 724,-248 718,-254 712,-254 712,-254 61,-254 61,-254 55,-254 49,-248 49,-242 49,-242 49,-155 49,-155 49,-149 55,-143 61,-143"/>
+<text text-anchor="middle" x="111" y="-236.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 9</text>
+</g>
+<g id="clust21" class="cluster">
+<title>cluster_s10</title>
+<path fill="#eaf6f4" stroke="#d9d2bf" d="M30,-8C30,-8 684,-8 684,-8 690,-8 696,-14 696,-20 696,-20 696,-107 696,-107 696,-113 690,-119 684,-119 684,-119 30,-119 30,-119 24,-119 18,-113 18,-107 18,-107 18,-20 18,-20 18,-14 24,-8 30,-8"/>
+<text text-anchor="middle" x="85" y="-101.4" font-family="Helvetica Bold" font-size="17.00" fill="#6b7a95">SEMESTER 10</text>
+</g>
+<!-- CPIT110 -->
+<g id="node1" class="node">
+<title>CPIT110</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M692,-1426C692,-1426 520,-1426 520,-1426 514,-1426 508,-1420 508,-1414 508,-1414 508,-1386 508,-1386 508,-1380 514,-1374 520,-1374 520,-1374 692,-1374 692,-1374 698,-1374 704,-1380 704,-1386 704,-1386 704,-1414 704,-1414 704,-1420 698,-1426 692,-1426"/>
+<text text-anchor="middle" x="606" y="-1405" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CPIT 110</text>
+<text text-anchor="middle" x="606" y="-1388" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Programming (Python)</text>
+</g>
+<!-- CS101 -->
+<g id="node5" class="node">
+<title>CS101</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M564,-1291C564,-1291 506,-1291 506,-1291 500,-1291 494,-1285 494,-1279 494,-1279 494,-1251 494,-1251 494,-1245 500,-1239 506,-1239 506,-1239 564,-1239 564,-1239 570,-1239 576,-1245 576,-1251 576,-1251 576,-1279 576,-1279 576,-1285 570,-1291 564,-1291"/>
+<text text-anchor="middle" x="535" y="-1270" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 101</text>
+<text text-anchor="middle" x="535" y="-1253" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">OOP</text>
+</g>
+<!-- CPIT110&#45;&gt;CS101 -->
+<g id="edge1" class="edge">
+<title>CPIT110&#45;&gt;CS101</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M542,-1373.97C542,-1373.97 542,-1299.91 542,-1299.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="544.98,-1299.91 542,-1291.41 539.03,-1299.91 544.98,-1299.91"/>
+</g>
+<!-- AI203 -->
+<g id="node13" class="node">
+<title>AI203</title>
+<path fill="#9ed6ce" stroke="black" stroke-width="0" d="M1069,-1021C1069,-1021 943,-1021 943,-1021 937,-1021 931,-1015 931,-1009 931,-1009 931,-981 931,-981 931,-975 937,-969 943,-969 943,-969 1069,-969 1069,-969 1075,-969 1081,-975 1081,-981 1081,-981 1081,-1009 1081,-1009 1081,-1015 1075,-1021 1069,-1021"/>
+<text text-anchor="middle" x="1006" y="-1000" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI 203</text>
+<text text-anchor="middle" x="1006" y="-983" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI Programming</text>
+</g>
+<!-- CPIT110&#45;&gt;AI203 -->
+<g id="edge10" class="edge">
+<title>CPIT110&#45;&gt;AI203</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M651.75,-1373.9C651.75,-1354.73 651.75,-1332 651.75,-1332 651.75,-1332 942.5,-1332 942.5,-1332 942.5,-1332 942.5,-1029.66 942.5,-1029.66"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="945.48,-1029.66 942.5,-1021.16 939.53,-1029.66 945.48,-1029.66"/>
+</g>
+<!-- MATH110 -->
+<g id="node2" class="node">
+<title>MATH110</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M819,-1426C819,-1426 739,-1426 739,-1426 733,-1426 727,-1420 727,-1414 727,-1414 727,-1386 727,-1386 727,-1380 733,-1374 739,-1374 739,-1374 819,-1374 819,-1374 825,-1374 831,-1380 831,-1386 831,-1386 831,-1414 831,-1414 831,-1420 825,-1426 819,-1426"/>
+<text text-anchor="middle" x="779" y="-1405" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">MATH 110</text>
+<text text-anchor="middle" x="779" y="-1388" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Calculus</text>
+</g>
+<!-- CS121 -->
+<g id="node6" class="node">
+<title>CS121</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M762.5,-1291C762.5,-1291 611.5,-1291 611.5,-1291 605.5,-1291 599.5,-1285 599.5,-1279 599.5,-1279 599.5,-1251 599.5,-1251 599.5,-1245 605.5,-1239 611.5,-1239 611.5,-1239 762.5,-1239 762.5,-1239 768.5,-1239 774.5,-1245 774.5,-1251 774.5,-1251 774.5,-1279 774.5,-1279 774.5,-1285 768.5,-1291 762.5,-1291"/>
+<text text-anchor="middle" x="687" y="-1270" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 121</text>
+<text text-anchor="middle" x="687" y="-1253" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Math for Computing</text>
+</g>
+<!-- MATH110&#45;&gt;CS121 -->
+<g id="edge5" class="edge">
+<title>MATH110&#45;&gt;CS121</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M750.75,-1373.97C750.75,-1373.97 750.75,-1299.91 750.75,-1299.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="753.73,-1299.91 750.75,-1291.41 747.78,-1299.91 753.73,-1299.91"/>
+</g>
+<!-- MATH209 -->
+<g id="node16" class="node">
+<title>MATH209</title>
+<path fill="#c7d6ea" stroke="black" stroke-width="0" d="M896,-1021C896,-1021 776,-1021 776,-1021 770,-1021 764,-1015 764,-1009 764,-1009 764,-981 764,-981 764,-975 770,-969 776,-969 776,-969 896,-969 896,-969 902,-969 908,-975 908,-981 908,-981 908,-1009 908,-1009 908,-1015 902,-1021 896,-1021"/>
+<text text-anchor="middle" x="836" y="-1000" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">MATH 209</text>
+<text text-anchor="middle" x="836" y="-983" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Calculus for CS</text>
+</g>
+<!-- MATH110&#45;&gt;MATH209 -->
+<g id="edge4" class="edge">
+<title>MATH110&#45;&gt;MATH209</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M802.75,-1373.74C802.75,-1373.74 802.75,-1029.7 802.75,-1029.7"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="805.73,-1029.7 802.75,-1021.2 799.78,-1029.7 805.73,-1029.7"/>
+</g>
+<!-- STAT110 -->
+<g id="node3" class="node">
+<title>STAT110</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M942,-1426C942,-1426 866,-1426 866,-1426 860,-1426 854,-1420 854,-1414 854,-1414 854,-1386 854,-1386 854,-1380 860,-1374 866,-1374 866,-1374 942,-1374 942,-1374 948,-1374 954,-1380 954,-1386 954,-1386 954,-1414 954,-1414 954,-1420 948,-1426 942,-1426"/>
+<text text-anchor="middle" x="904" y="-1405" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">STAT 110</text>
+<text text-anchor="middle" x="904" y="-1388" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Statistics</text>
+</g>
+<!-- AI221 -->
+<g id="node14" class="node">
+<title>AI221</title>
+<path fill="#9ed6ce" stroke="black" stroke-width="0" d="M728.5,-1021C728.5,-1021 547.5,-1021 547.5,-1021 541.5,-1021 535.5,-1015 535.5,-1009 535.5,-1009 535.5,-981 535.5,-981 535.5,-975 541.5,-969 547.5,-969 547.5,-969 728.5,-969 728.5,-969 734.5,-969 740.5,-975 740.5,-981 740.5,-981 740.5,-1009 740.5,-1009 740.5,-1015 734.5,-1021 728.5,-1021"/>
+<text text-anchor="middle" x="638" y="-1000" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI 221</text>
+<text text-anchor="middle" x="638" y="-983" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">Math Foundations for AI</text>
+</g>
+<!-- STAT110&#45;&gt;AI221 -->
+<g id="edge7" class="edge">
+<title>STAT110&#45;&gt;AI221</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M881,-1373.88C881,-1319.05 881,-1197 881,-1197 881,-1197 722,-1197 722,-1197 722,-1197 722,-1029.91 722,-1029.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="724.98,-1029.91 722,-1021.41 719.03,-1029.91 724.98,-1029.91"/>
+</g>
+<!-- IT121 -->
+<g id="node4" class="node">
+<title>IT121</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M473,-1426C473,-1426 347,-1426 347,-1426 341,-1426 335,-1420 335,-1414 335,-1414 335,-1386 335,-1386 335,-1380 341,-1374 347,-1374 347,-1374 473,-1374 473,-1374 479,-1374 485,-1380 485,-1386 485,-1386 485,-1414 485,-1414 485,-1420 479,-1426 473,-1426"/>
+<text text-anchor="middle" x="410" y="-1405" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">IT 121</text>
+<text text-anchor="middle" x="410" y="-1388" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Intro Computing</text>
+</g>
+<!-- IT122 -->
+<g id="node7" class="node">
+<title>IT122</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M459,-1291C459,-1291 343,-1291 343,-1291 337,-1291 331,-1285 331,-1279 331,-1279 331,-1251 331,-1251 331,-1245 337,-1239 343,-1239 343,-1239 459,-1239 459,-1239 465,-1239 471,-1245 471,-1251 471,-1251 471,-1279 471,-1279 471,-1285 465,-1291 459,-1291"/>
+<text text-anchor="middle" x="401" y="-1270" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">IT 122</text>
+<text text-anchor="middle" x="401" y="-1253" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Emerging Tech</text>
+</g>
+<!-- IT121&#45;&gt;IT122 -->
+<g id="edge8" class="edge">
+<title>IT121&#45;&gt;IT122</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M403,-1373.97C403,-1373.97 403,-1299.91 403,-1299.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="405.98,-1299.91 403,-1291.41 400.03,-1299.91 405.98,-1299.91"/>
+</g>
+<!-- CS202 -->
+<g id="node9" class="node">
+<title>CS202</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M673,-1156C673,-1156 553,-1156 553,-1156 547,-1156 541,-1150 541,-1144 541,-1144 541,-1116 541,-1116 541,-1110 547,-1104 553,-1104 553,-1104 673,-1104 673,-1104 679,-1104 685,-1110 685,-1116 685,-1116 685,-1144 685,-1144 685,-1150 679,-1156 673,-1156"/>
+<text text-anchor="middle" x="613" y="-1135" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 202</text>
+<text text-anchor="middle" x="613" y="-1118" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Data Structures</text>
+</g>
+<!-- CS101&#45;&gt;CS202 -->
+<g id="edge2" class="edge">
+<title>CS101&#45;&gt;CS202</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M558.5,-1238.97C558.5,-1238.97 558.5,-1164.91 558.5,-1164.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="561.48,-1164.91 558.5,-1156.41 555.53,-1164.91 561.48,-1164.91"/>
+</g>
+<!-- CS121&#45;&gt;AI221 -->
+<g id="edge6" class="edge">
+<title>CS121&#45;&gt;AI221</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M703.5,-1238.62C703.5,-1238.62 703.5,-1029.59 703.5,-1029.59"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="706.48,-1029.59 703.5,-1021.09 700.53,-1029.59 706.48,-1029.59"/>
+</g>
+<!-- PHYS110 -->
+<g id="node8" class="node">
+<title>PHYS110</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M296,-1291C296,-1291 218,-1291 218,-1291 212,-1291 206,-1285 206,-1279 206,-1279 206,-1251 206,-1251 206,-1245 212,-1239 218,-1239 218,-1239 296,-1239 296,-1239 302,-1239 308,-1245 308,-1251 308,-1251 308,-1279 308,-1279 308,-1285 302,-1291 296,-1291"/>
+<text text-anchor="middle" x="257" y="-1270" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">PHYS 110</text>
+<text text-anchor="middle" x="257" y="-1253" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Physics</text>
+</g>
+<!-- PHYS281 -->
+<g id="node20" class="node">
+<title>PHYS281</title>
+<path fill="#c7d6ea" stroke="black" stroke-width="0" d="M132,-886C132,-886 36,-886 36,-886 30,-886 24,-880 24,-874 24,-874 24,-846 24,-846 24,-840 30,-834 36,-834 36,-834 132,-834 132,-834 138,-834 144,-840 144,-846 144,-846 144,-874 144,-874 144,-880 138,-886 132,-886"/>
+<text text-anchor="middle" x="84" y="-865" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">PHYS 281</text>
+<text text-anchor="middle" x="84" y="-848" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Physics Lab</text>
+</g>
+<!-- PHYS110&#45;&gt;PHYS281 -->
+<g id="edge9" class="edge">
+<title>PHYS110&#45;&gt;PHYS281</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M205.89,-1265C138.74,-1265 29.25,-1265 29.25,-1265 29.25,-1265 29.25,-894.76 29.25,-894.76"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="32.23,-894.76 29.25,-886.26 26.28,-894.76 32.23,-894.76"/>
+</g>
+<!-- CS224 -->
+<g id="node15" class="node">
+<title>CS224</title>
+<path fill="#c7d6ea" stroke="black" stroke-width="0" d="M500.5,-1021C500.5,-1021 413.5,-1021 413.5,-1021 407.5,-1021 401.5,-1015 401.5,-1009 401.5,-1009 401.5,-981 401.5,-981 401.5,-975 407.5,-969 413.5,-969 413.5,-969 500.5,-969 500.5,-969 506.5,-969 512.5,-975 512.5,-981 512.5,-981 512.5,-1009 512.5,-1009 512.5,-1015 506.5,-1021 500.5,-1021"/>
+<text text-anchor="middle" x="457" y="-1000" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 224</text>
+<text text-anchor="middle" x="457" y="-983" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Algorithms</text>
+</g>
+<!-- CS202&#45;&gt;CS224 -->
+<g id="edge3" class="edge">
+<title>CS202&#45;&gt;CS224</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M540.99,-1130C532.48,-1130 526.75,-1130 526.75,-1130 526.75,-1130 526.75,-995 526.75,-995 526.75,-995 521.14,-995 521.14,-995"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="521.14,-992.03 512.64,-995 521.14,-997.98 521.14,-992.03"/>
+</g>
+<!-- CS122 -->
+<g id="node10" class="node">
+<title>CS122</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M506,-1156C506,-1156 438,-1156 438,-1156 432,-1156 426,-1150 426,-1144 426,-1144 426,-1116 426,-1116 426,-1110 432,-1104 438,-1104 438,-1104 506,-1104 506,-1104 512,-1104 518,-1110 518,-1116 518,-1116 518,-1144 518,-1144 518,-1150 512,-1156 506,-1156"/>
+<text text-anchor="middle" x="472" y="-1135" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 122</text>
+<text text-anchor="middle" x="472" y="-1118" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Discrete</text>
+</g>
+<!-- CIS291 -->
+<g id="node11" class="node">
+<title>CIS291</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M183.5,-1156C183.5,-1156 46.5,-1156 46.5,-1156 40.5,-1156 34.5,-1150 34.5,-1144 34.5,-1144 34.5,-1116 34.5,-1116 34.5,-1110 40.5,-1104 46.5,-1104 46.5,-1104 183.5,-1104 183.5,-1104 189.5,-1104 195.5,-1110 195.5,-1116 195.5,-1116 195.5,-1144 195.5,-1144 195.5,-1150 189.5,-1156 183.5,-1156"/>
+<text text-anchor="middle" x="115" y="-1135" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CIS 291</text>
+<text text-anchor="middle" x="115" y="-1118" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Computing Ethics</text>
+</g>
+<!-- AI339 -->
+<g id="node18" class="node">
+<title>AI339</title>
+<path fill="#9ed6ce" stroke="black" stroke-width="0" d="M296.5,-886C296.5,-886 179.5,-886 179.5,-886 173.5,-886 167.5,-880 167.5,-874 167.5,-874 167.5,-846 167.5,-846 167.5,-840 173.5,-834 179.5,-834 179.5,-834 296.5,-834 296.5,-834 302.5,-834 308.5,-840 308.5,-846 308.5,-846 308.5,-874 308.5,-874 308.5,-880 302.5,-886 296.5,-886"/>
+<text text-anchor="middle" x="238" y="-865" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI 339</text>
+<text text-anchor="middle" x="238" y="-848" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">Responsible AI</text>
+</g>
+<!-- CIS291&#45;&gt;AI339 -->
+<g id="edge13" class="edge">
+<title>CIS291&#45;&gt;AI339</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M181.5,-1103.62C181.5,-1103.62 181.5,-894.59 181.5,-894.59"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="184.48,-894.59 181.5,-886.09 178.53,-894.59 184.48,-894.59"/>
+</g>
+<!-- IT123 -->
+<g id="node12" class="node">
+<title>IT123</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M391,-1156C391,-1156 231,-1156 231,-1156 225,-1156 219,-1150 219,-1144 219,-1144 219,-1116 219,-1116 219,-1110 225,-1104 231,-1104 231,-1104 391,-1104 391,-1104 397,-1104 403,-1110 403,-1116 403,-1116 403,-1144 403,-1144 403,-1150 397,-1156 391,-1156"/>
+<text text-anchor="middle" x="311" y="-1135" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">IT 123</text>
+<text text-anchor="middle" x="311" y="-1118" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Tech Communication</text>
+</g>
+<!-- IT123&#45;&gt;AI221 -->
+<!-- CS351 -->
+<g id="node19" class="node">
+<title>CS351</title>
+<path fill="#c7d6ea" stroke="black" stroke-width="0" d="M744,-886C744,-886 582,-886 582,-886 576,-886 570,-880 570,-874 570,-874 570,-846 570,-846 570,-840 576,-834 582,-834 582,-834 744,-834 744,-834 750,-834 756,-840 756,-846 756,-846 756,-874 756,-874 756,-880 750,-886 744,-886"/>
+<text text-anchor="middle" x="663" y="-865" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 351</text>
+<text text-anchor="middle" x="663" y="-848" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Software Engineering</text>
+</g>
+<!-- AI203&#45;&gt;CS351 -->
+<g id="edge14" class="edge">
+<title>AI203&#45;&gt;CS351</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M994.9,-968.83C994.9,-932.98 994.9,-873 994.9,-873 994.9,-873 764.84,-873 764.84,-873"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="764.84,-870.03 756.34,-873 764.84,-875.98 764.84,-870.03"/>
+</g>
+<!-- AI342 -->
+<g id="node22" class="node">
+<title>AI342</title>
+<path fill="#9ed6ce" stroke="black" stroke-width="0" d="M567,-751C567,-751 449,-751 449,-751 443,-751 437,-745 437,-739 437,-739 437,-711 437,-711 437,-705 443,-699 449,-699 449,-699 567,-699 567,-699 573,-699 579,-705 579,-711 579,-711 579,-739 579,-739 579,-745 573,-751 567,-751"/>
+<text text-anchor="middle" x="508" y="-730" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI 342</text>
+<text text-anchor="middle" x="508" y="-713" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">Data&#45;Centric AI</text>
+</g>
+<!-- AI203&#45;&gt;AI342 -->
+<g id="edge15" class="edge">
+<title>AI203&#45;&gt;AI342</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M1052.3,-968.72C1052.3,-916.79 1052.3,-806 1052.3,-806 1052.3,-806 574.5,-806 574.5,-806 574.5,-806 574.5,-759.57 574.5,-759.57"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="577.48,-759.57 574.5,-751.07 571.53,-759.57 577.48,-759.57"/>
+</g>
+<!-- AI360 -->
+<g id="node27" class="node">
+<title>AI360</title>
+<path fill="#9ed6ce" stroke="black" stroke-width="0" d="M883.5,-616C883.5,-616 706.5,-616 706.5,-616 700.5,-616 694.5,-610 694.5,-604 694.5,-604 694.5,-576 694.5,-576 694.5,-570 700.5,-564 706.5,-564 706.5,-564 883.5,-564 883.5,-564 889.5,-564 895.5,-570 895.5,-576 895.5,-576 895.5,-604 895.5,-604 895.5,-610 889.5,-616 883.5,-616"/>
+<text text-anchor="middle" x="795" y="-595" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI 360</text>
+<text text-anchor="middle" x="795" y="-578" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI Systems &amp; Networks</text>
+</g>
+<!-- AI203&#45;&gt;AI360 -->
+<g id="edge16" class="edge">
+<title>AI203&#45;&gt;AI360</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M1023.6,-968.88C1023.6,-926.39 1023.6,-847 1023.6,-847 1023.6,-847 771.17,-847 771.17,-847 771.17,-847 771.17,-624.56 771.17,-624.56"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="774.14,-624.56 771.17,-616.06 768.19,-624.56 774.14,-624.56"/>
+</g>
+<!-- CS331 -->
+<g id="node17" class="node">
+<title>CS331</title>
+<path fill="#c7d6ea" stroke="black" stroke-width="0" d="M535,-886C535,-886 379,-886 379,-886 373,-886 367,-880 367,-874 367,-874 367,-846 367,-846 367,-840 373,-834 379,-834 379,-834 535,-834 535,-834 541,-834 547,-840 547,-846 547,-846 547,-874 547,-874 547,-880 541,-886 535,-886"/>
+<text text-anchor="middle" x="457" y="-865" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 331</text>
+<text text-anchor="middle" x="457" y="-848" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Artificial Intelligence</text>
+</g>
+<!-- CS224&#45;&gt;CS331 -->
+<g id="edge11" class="edge">
+<title>CS224&#45;&gt;CS331</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M457,-968.97C457,-968.97 457,-894.91 457,-894.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="459.98,-894.91 457,-886.41 454.03,-894.91 459.98,-894.91"/>
+</g>
+<!-- MATH209&#45;&gt;CS331 -->
+<g id="edge12" class="edge">
+<title>MATH209&#45;&gt;CS331</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M778.33,-968.9C778.33,-949.73 778.33,-927 778.33,-927 778.33,-927 541.25,-927 541.25,-927 541.25,-927 541.25,-894.6 541.25,-894.6"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="544.23,-894.6 541.25,-886.1 538.28,-894.6 544.23,-894.6"/>
+</g>
+<!-- CS331&#45;&gt;AI339 -->
+<g id="edge34" class="edge">
+<title>CS331&#45;&gt;AI339</title>
+<path fill="none" stroke="#0e616e" stroke-width="1.7" stroke-dasharray="5,2" d="M366.98,-860C366.98,-860 317.1,-860 317.1,-860"/>
+<polygon fill="#0e616e" stroke="#0e616e" stroke-width="1.7" points="317.1,-857.03 308.6,-860 317.1,-862.98 317.1,-857.03"/>
+</g>
+<!-- CS332 -->
+<g id="node21" class="node">
+<title>CS332</title>
+<path fill="#c7d6ea" stroke="black" stroke-width="0" d="M750,-751C750,-751 614,-751 614,-751 608,-751 602,-745 602,-739 602,-739 602,-711 602,-711 602,-705 608,-699 614,-699 614,-699 750,-699 750,-699 756,-699 762,-705 762,-711 762,-711 762,-739 762,-739 762,-745 756,-751 750,-751"/>
+<text text-anchor="middle" x="682" y="-730" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CS 332</text>
+<text text-anchor="middle" x="682" y="-713" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Machine Learning</text>
+</g>
+<!-- CS331&#45;&gt;CS332 -->
+<g id="edge17" class="edge">
+<title>CS331&#45;&gt;CS332</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M492,-833.6C492,-809.63 492,-778 492,-778 492,-778 679,-778 679,-778 679,-778 679,-759.69 679,-759.69"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="681.98,-759.69 679,-751.19 676.03,-759.69 681.98,-759.69"/>
+</g>
+<!-- AI498 -->
+<g id="node34" class="node">
+<title>AI498</title>
+<path fill="#1f3864" stroke="black" stroke-width="0" d="M527,-211C527,-211 407,-211 407,-211 401,-211 395,-205 395,-199 395,-199 395,-171 395,-171 395,-165 401,-159 407,-159 407,-159 527,-159 527,-159 533,-159 539,-165 539,-171 539,-171 539,-199 539,-199 539,-205 533,-211 527,-211"/>
+<text text-anchor="middle" x="467" y="-190" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 498</text>
+<text text-anchor="middle" x="467" y="-173" font-family="Helvetica Bold" font-size="15.00" fill="white">Senior Project I</text>
+</g>
+<!-- AI339&#45;&gt;AI498 -->
+<g id="edge32" class="edge">
+<title>AI339&#45;&gt;AI498</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M267.5,-834C267.5,-712.55 267.5,-207 267.5,-207 267.5,-207 386.48,-207 386.48,-207"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="386.48,-209.98 394.98,-207 386.48,-204.03 386.48,-209.98"/>
+</g>
+<!-- AI341 -->
+<g id="node23" class="node">
+<title>AI341</title>
+<path fill="#9ed6ce" stroke="black" stroke-width="0" d="M1108.5,-751C1108.5,-751 949.5,-751 949.5,-751 943.5,-751 937.5,-745 937.5,-739 937.5,-739 937.5,-711 937.5,-711 937.5,-705 943.5,-699 949.5,-699 949.5,-699 1108.5,-699 1108.5,-699 1114.5,-699 1120.5,-705 1120.5,-711 1120.5,-711 1120.5,-739 1120.5,-739 1120.5,-745 1114.5,-751 1108.5,-751"/>
+<text text-anchor="middle" x="1029" y="-730" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">AI 341</text>
+<text text-anchor="middle" x="1029" y="-713" font-family="Helvetica Bold" font-size="15.00" fill="#0b3c36">Intelligent Databases</text>
+</g>
+<!-- CS351&#45;&gt;AI341 -->
+<g id="edge18" class="edge">
+<title>CS351&#45;&gt;AI341</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M756.03,-860C845.16,-860 966.2,-860 966.2,-860 966.2,-860 966.2,-759.53 966.2,-759.53"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="969.18,-759.53 966.2,-751.03 963.23,-759.53 969.18,-759.53"/>
+</g>
+<!-- AI350 -->
+<g id="node32" class="node">
+<title>AI350</title>
+<path fill="#0e616e" stroke="black" stroke-width="0" d="M775.5,-481C775.5,-481 600.5,-481 600.5,-481 594.5,-481 588.5,-475 588.5,-469 588.5,-469 588.5,-441 588.5,-441 588.5,-435 594.5,-429 600.5,-429 600.5,-429 775.5,-429 775.5,-429 781.5,-429 787.5,-435 787.5,-441 787.5,-441 787.5,-469 787.5,-469 787.5,-475 781.5,-481 775.5,-481"/>
+<text text-anchor="middle" x="688" y="-460" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 350</text>
+<text text-anchor="middle" x="688" y="-443" font-family="Helvetica Bold" font-size="15.00" fill="white">AI Product Engineering</text>
+</g>
+<!-- CS351&#45;&gt;AI350 -->
+<g id="edge26" class="edge">
+<title>CS351&#45;&gt;AI350</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M590.5,-833.7C590.5,-780.47 590.5,-665 590.5,-665 590.5,-665 676.88,-665 676.88,-665 676.88,-665 676.88,-489.67 676.88,-489.67"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="679.85,-489.67 676.88,-481.17 673.9,-489.67 679.85,-489.67"/>
+</g>
+<!-- AI336 -->
+<g id="node25" class="node">
+<title>AI336</title>
+<path fill="#5bbfb2" stroke="black" stroke-width="0" d="M1219.5,-616C1219.5,-616 1106.5,-616 1106.5,-616 1100.5,-616 1094.5,-610 1094.5,-604 1094.5,-604 1094.5,-576 1094.5,-576 1094.5,-570 1100.5,-564 1106.5,-564 1106.5,-564 1219.5,-564 1219.5,-564 1225.5,-564 1231.5,-570 1231.5,-576 1231.5,-576 1231.5,-604 1231.5,-604 1231.5,-610 1225.5,-616 1219.5,-616"/>
+<text text-anchor="middle" x="1163" y="-595" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 336</text>
+<text text-anchor="middle" x="1163" y="-578" font-family="Helvetica Bold" font-size="15.00" fill="white">Deep Learning</text>
+</g>
+<!-- CS332&#45;&gt;AI336 -->
+<g id="edge19" class="edge">
+<title>CS332&#45;&gt;AI336</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M728.25,-698.6C728.25,-671.1 728.25,-632 728.25,-632 728.25,-632 1103.17,-632 1103.17,-632 1103.17,-632 1103.17,-624.86 1103.17,-624.86"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="1106.14,-624.86 1103.17,-616.36 1100.19,-624.86 1106.14,-624.86"/>
+</g>
+<!-- AI335 -->
+<g id="node26" class="node">
+<title>AI335</title>
+<path fill="#0e616e" stroke="black" stroke-width="0" d="M659,-616C659,-616 479,-616 479,-616 473,-616 467,-610 467,-604 467,-604 467,-576 467,-576 467,-570 473,-564 479,-564 479,-564 659,-564 659,-564 665,-564 671,-570 671,-576 671,-576 671,-604 671,-604 671,-610 665,-616 659,-616"/>
+<text text-anchor="middle" x="569" y="-595" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 335</text>
+<text text-anchor="middle" x="569" y="-578" font-family="Helvetica Bold" font-size="15.00" fill="white">Generative &amp; Agentic AI</text>
+</g>
+<!-- CS332&#45;&gt;AI335 -->
+<g id="edge20" class="edge">
+<title>CS332&#45;&gt;AI335</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M636.5,-698.97C636.5,-698.97 636.5,-624.91 636.5,-624.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="639.48,-624.91 636.5,-616.41 633.53,-624.91 639.48,-624.91"/>
+</g>
+<!-- AI333 -->
+<g id="node30" class="node">
+<title>AI333</title>
+<path fill="#5bbfb2" stroke="black" stroke-width="0" d="M1355.5,-481C1355.5,-481 1214.5,-481 1214.5,-481 1208.5,-481 1202.5,-475 1202.5,-469 1202.5,-469 1202.5,-441 1202.5,-441 1202.5,-435 1208.5,-429 1214.5,-429 1214.5,-429 1355.5,-429 1355.5,-429 1361.5,-429 1367.5,-435 1367.5,-441 1367.5,-441 1367.5,-469 1367.5,-469 1367.5,-475 1361.5,-481 1355.5,-481"/>
+<text text-anchor="middle" x="1285" y="-460" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 333</text>
+<text text-anchor="middle" x="1285" y="-443" font-family="Helvetica Bold" font-size="15.00" fill="white">NLP (+Arabic unit)</text>
+</g>
+<!-- CS332&#45;&gt;AI333 -->
+<g id="edge21" class="edge">
+<title>CS332&#45;&gt;AI333</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M688.62,-698.74C688.62,-649.22 688.62,-547 688.62,-547 688.62,-547 1217,-547 1217,-547 1217,-547 1217,-489.62 1217,-489.62"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="1219.98,-489.62 1217,-481.12 1214.03,-489.62 1219.98,-489.62"/>
+</g>
+<!-- AI334 -->
+<g id="node31" class="node">
+<title>AI334</title>
+<path fill="#5bbfb2" stroke="black" stroke-width="0" d="M991,-481C991,-481 823,-481 823,-481 817,-481 811,-475 811,-469 811,-469 811,-441 811,-441 811,-435 817,-429 823,-429 823,-429 991,-429 991,-429 997,-429 1003,-435 1003,-441 1003,-441 1003,-469 1003,-469 1003,-475 997,-481 991,-481"/>
+<text text-anchor="middle" x="907" y="-460" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 334</text>
+<text text-anchor="middle" x="907" y="-443" font-family="Helvetica Bold" font-size="15.00" fill="white">Robotics &amp; Embedded</text>
+</g>
+<!-- CS332&#45;&gt;AI334 -->
+<g id="edge22" class="edge">
+<title>CS332&#45;&gt;AI334</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M682.75,-698.7C682.75,-642.14 682.75,-514 682.75,-514 682.75,-514 853.25,-514 853.25,-514 853.25,-514 853.25,-489.55 853.25,-489.55"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="856.23,-489.55 853.25,-481.05 850.28,-489.55 856.23,-489.55"/>
+</g>
+<!-- AI342&#45;&gt;AI498 -->
+<g id="edge29" class="edge">
+<title>AI342&#45;&gt;AI498</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M436.84,-725C421.1,-725 409,-725 409,-725 409,-725 409,-219.55 409,-219.55"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="411.98,-219.55 409,-211.05 406.03,-219.55 411.98,-219.55"/>
+</g>
+<!-- AI341&#45;&gt;AI498 -->
+<g id="edge30" class="edge">
+<title>AI341&#45;&gt;AI498</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M1004.25,-698.99C1004.25,-689.94 1004.25,-682 1004.25,-682 1004.25,-682 423,-682 423,-682 423,-682 423,-219.52 423,-219.52"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="425.98,-219.52 423,-211.02 420.03,-219.52 425.98,-219.52"/>
+</g>
+<!-- CIS355 -->
+<g id="node24" class="node">
+<title>CIS355</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M902.5,-751C902.5,-751 797.5,-751 797.5,-751 791.5,-751 785.5,-745 785.5,-739 785.5,-739 785.5,-711 785.5,-711 785.5,-705 791.5,-699 797.5,-699 797.5,-699 902.5,-699 902.5,-699 908.5,-699 914.5,-705 914.5,-711 914.5,-711 914.5,-739 914.5,-739 914.5,-745 908.5,-751 902.5,-751"/>
+<text text-anchor="middle" x="850" y="-730" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CIS 355</text>
+<text text-anchor="middle" x="850" y="-713" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Project Mgmt</text>
+</g>
+<!-- CIS355&#45;&gt;AI336 -->
+<!-- AI332 -->
+<g id="node29" class="node">
+<title>AI332</title>
+<path fill="#5bbfb2" stroke="black" stroke-width="0" d="M1167.5,-481C1167.5,-481 1038.5,-481 1038.5,-481 1032.5,-481 1026.5,-475 1026.5,-469 1026.5,-469 1026.5,-441 1026.5,-441 1026.5,-435 1032.5,-429 1038.5,-429 1038.5,-429 1167.5,-429 1167.5,-429 1173.5,-429 1179.5,-435 1179.5,-441 1179.5,-441 1179.5,-469 1179.5,-469 1179.5,-475 1173.5,-481 1167.5,-481"/>
+<text text-anchor="middle" x="1103" y="-460" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 332</text>
+<text text-anchor="middle" x="1103" y="-443" font-family="Helvetica Bold" font-size="15.00" fill="white">Computer Vision</text>
+</g>
+<!-- AI336&#45;&gt;AI332 -->
+<g id="edge23" class="edge">
+<title>AI336&#45;&gt;AI332</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M1158.25,-563.97C1158.25,-563.97 1158.25,-489.91 1158.25,-489.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="1161.23,-489.91 1158.25,-481.41 1155.28,-489.91 1161.23,-489.91"/>
+</g>
+<!-- AI336&#45;&gt;AI334 -->
+<g id="edge24" class="edge">
+<title>AI336&#45;&gt;AI334</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M1137,-563.6C1137,-536.1 1137,-497 1137,-497 1137,-497 961,-497 961,-497 961,-497 961,-489.86 961,-489.86"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="963.98,-489.86 961,-481.36 958.03,-489.86 963.98,-489.86"/>
+</g>
+<!-- AI336&#45;&gt;AI350 -->
+<g id="edge25" class="edge">
+<title>AI336&#45;&gt;AI350</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M1115.75,-563.86C1115.75,-547.69 1115.75,-530 1115.75,-530 1115.75,-530 741,-530 741,-530 741,-530 741,-489.73 741,-489.73"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="743.98,-489.73 741,-481.23 738.03,-489.73 743.98,-489.73"/>
+</g>
+<!-- AI360&#45;&gt;AI498 -->
+<g id="edge31" class="edge">
+<title>AI360&#45;&gt;AI498</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M799.25,-563.84C799.25,-477.19 799.25,-205 799.25,-205 799.25,-205 547.59,-205 547.59,-205"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="547.59,-202.03 539.09,-205 547.59,-207.98 547.59,-202.03"/>
+</g>
+<!-- CIS393 -->
+<g id="node28" class="node">
+<title>CIS393</title>
+<path fill="#e8eef7" stroke="black" stroke-width="0" d="M1059,-616C1059,-616 931,-616 931,-616 925,-616 919,-610 919,-604 919,-604 919,-576 919,-576 919,-570 925,-564 931,-564 931,-564 1059,-564 1059,-564 1065,-564 1071,-570 1071,-576 1071,-576 1071,-604 1071,-604 1071,-610 1065,-616 1059,-616"/>
+<text text-anchor="middle" x="995" y="-595" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">CIS 393</text>
+<text text-anchor="middle" x="995" y="-578" font-family="Helvetica Bold" font-size="15.00" fill="#102a4c">Workplace Skills</text>
+</g>
+<!-- CS495 -->
+<g id="node33" class="node">
+<title>CS495</title>
+<path fill="#c9a227" stroke="black" stroke-width="0" d="M657.5,-346C657.5,-346 450.5,-346 450.5,-346 444.5,-346 438.5,-340 438.5,-334 438.5,-334 438.5,-306 438.5,-306 438.5,-300 444.5,-294 450.5,-294 450.5,-294 657.5,-294 657.5,-294 663.5,-294 669.5,-300 669.5,-306 669.5,-306 669.5,-334 669.5,-334 669.5,-340 663.5,-346 657.5,-346"/>
+<text text-anchor="middle" x="554" y="-325" font-family="Helvetica Bold" font-size="15.00" fill="#241b04">CS 495</text>
+<text text-anchor="middle" x="554" y="-308" font-family="Helvetica Bold" font-size="15.00" fill="#241b04">Summer Training (full&#45;time)</text>
+</g>
+<!-- CIS393&#45;&gt;CS495 -->
+<g id="edge27" class="edge">
+<title>CIS393&#45;&gt;CS495</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M1014.75,-563.62C1014.75,-495.68 1014.75,-320 1014.75,-320 1014.75,-320 678.17,-320 678.17,-320"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="678.17,-317.03 669.67,-320 678.17,-322.98 678.17,-317.03"/>
+</g>
+<!-- AI350&#45;&gt;CS495 -->
+<!-- AI350&#45;&gt;AI498 -->
+<g id="edge28" class="edge">
+<title>AI350&#45;&gt;AI498</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M688.5,-428.57C688.5,-364.85 688.5,-208 688.5,-208 688.5,-208 547.72,-208 547.72,-208"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="547.72,-205.03 539.22,-208 547.72,-210.98 547.72,-205.03"/>
+</g>
+<!-- CS495&#45;&gt;AI498 -->
+<!-- AI499 -->
+<g id="node38" class="node">
+<title>AI499</title>
+<path fill="#1f3864" stroke="black" stroke-width="0" d="M668.5,-76C668.5,-76 543.5,-76 543.5,-76 537.5,-76 531.5,-70 531.5,-64 531.5,-64 531.5,-36 531.5,-36 531.5,-30 537.5,-24 543.5,-24 543.5,-24 668.5,-24 668.5,-24 674.5,-24 680.5,-30 680.5,-36 680.5,-36 680.5,-64 680.5,-64 680.5,-70 674.5,-76 668.5,-76"/>
+<text text-anchor="middle" x="606" y="-55" font-family="Helvetica Bold" font-size="15.00" fill="white">AI 499</text>
+<text text-anchor="middle" x="606" y="-38" font-family="Helvetica Bold" font-size="15.00" fill="white">Senior Project II</text>
+</g>
+<!-- AI498&#45;&gt;AI499 -->
+<g id="edge33" class="edge">
+<title>AI498&#45;&gt;AI499</title>
+<path fill="none" stroke="#5b6b82" stroke-width="1.7" d="M535.25,-158.97C535.25,-158.97 535.25,-84.91 535.25,-84.91"/>
+<polygon fill="#5b6b82" stroke="#5b6b82" stroke-width="1.7" points="538.23,-84.91 535.25,-76.41 532.28,-84.91 538.23,-84.91"/>
+</g>
+<!-- EL1 -->
+<g id="node35" class="node">
+<title>EL1</title>
+<path fill="#f1f5f9" stroke="black" stroke-width="0" d="M695.5,-203C695.5,-203 574.5,-203 574.5,-203 568.5,-203 562.5,-197 562.5,-191 562.5,-191 562.5,-179 562.5,-179 562.5,-173 568.5,-167 574.5,-167 574.5,-167 695.5,-167 695.5,-167 701.5,-167 707.5,-173 707.5,-179 707.5,-179 707.5,-191 707.5,-191 707.5,-197 701.5,-203 695.5,-203"/>
+<text text-anchor="middle" x="635" y="-181.5" font-family="Helvetica Bold" font-size="15.00" fill="#475569">Track Elective 1</text>
+</g>
+<!-- EL1&#45;&gt;AI499 -->
+<!-- EL2 -->
+<g id="node36" class="node">
+<title>EL2</title>
+<path fill="#f1f5f9" stroke="black" stroke-width="0" d="M359.5,-203C359.5,-203 238.5,-203 238.5,-203 232.5,-203 226.5,-197 226.5,-191 226.5,-191 226.5,-179 226.5,-179 226.5,-173 232.5,-167 238.5,-167 238.5,-167 359.5,-167 359.5,-167 365.5,-167 371.5,-173 371.5,-179 371.5,-179 371.5,-191 371.5,-191 371.5,-197 365.5,-203 359.5,-203"/>
+<text text-anchor="middle" x="299" y="-181.5" font-family="Helvetica Bold" font-size="15.00" fill="#475569">Track Elective 2</text>
+</g>
+<!-- FR1 -->
+<g id="node37" class="node">
+<title>FR1</title>
+<path fill="#f1f5f9" stroke="black" stroke-width="0" d="M191,-203C191,-203 77,-203 77,-203 71,-203 65,-197 65,-191 65,-191 65,-179 65,-179 65,-173 71,-167 77,-167 77,-167 191,-167 191,-167 197,-167 203,-173 203,-179 203,-179 203,-191 203,-191 203,-197 197,-203 191,-203"/>
+<text text-anchor="middle" x="134" y="-181.5" font-family="Helvetica Bold" font-size="15.00" fill="#475569">Free Elective 1</text>
+</g>
+<!-- EL3 -->
+<g id="node39" class="node">
+<title>EL3</title>
+<path fill="#f1f5f9" stroke="black" stroke-width="0" d="M496.5,-68C496.5,-68 375.5,-68 375.5,-68 369.5,-68 363.5,-62 363.5,-56 363.5,-56 363.5,-44 363.5,-44 363.5,-38 369.5,-32 375.5,-32 375.5,-32 496.5,-32 496.5,-32 502.5,-32 508.5,-38 508.5,-44 508.5,-44 508.5,-56 508.5,-56 508.5,-62 502.5,-68 496.5,-68"/>
+<text text-anchor="middle" x="436" y="-46.5" font-family="Helvetica Bold" font-size="15.00" fill="#475569">Track Elective 3</text>
+</g>
+<!-- EL4 -->
+<g id="node40" class="node">
+<title>EL4</title>
+<path fill="#f1f5f9" stroke="black" stroke-width="0" d="M328.5,-68C328.5,-68 207.5,-68 207.5,-68 201.5,-68 195.5,-62 195.5,-56 195.5,-56 195.5,-44 195.5,-44 195.5,-38 201.5,-32 207.5,-32 207.5,-32 328.5,-32 328.5,-32 334.5,-32 340.5,-38 340.5,-44 340.5,-44 340.5,-56 340.5,-56 340.5,-62 334.5,-68 328.5,-68"/>
+<text text-anchor="middle" x="268" y="-46.5" font-family="Helvetica Bold" font-size="15.00" fill="#475569">Track Elective 4</text>
+</g>
+<!-- FR2 -->
+<g id="node41" class="node">
+<title>FR2</title>
+<path fill="#f1f5f9" stroke="black" stroke-width="0" d="M160,-68C160,-68 46,-68 46,-68 40,-68 34,-62 34,-56 34,-56 34,-44 34,-44 34,-38 40,-32 46,-32 46,-32 160,-32 160,-32 166,-32 172,-38 172,-44 172,-44 172,-56 172,-56 172,-62 166,-68 160,-68"/>
+<text text-anchor="middle" x="103" y="-46.5" font-family="Helvetica Bold" font-size="15.00" fill="#475569">Free Elective 2</text>
+</g>
+</g>
+</svg>
+</div></div>
+</div>
+</section>
+
+<section>
+  <h2>Where We Match the Four Benchmarks, and Where We Differ</h2>
+  <p class="hint">Carnegie Mellon · MIT · NUS · Alfaisal · and why the differences work in our favor</p>
+  <div class="bgrid" id="bgrid"></div>
+  <div class="abet" id="abet">
+    <h3>The Referee: ABET's New AI/ML Program Criteria (effective Fall 2027)</h3>
+    <p>Every point where we differ from the four benchmarks is not a design whim · it is <b>explicitly required</b> by the new criteria all AI programs will be judged against. We were designed on it from day one, and they will have to catch up:</p>
+    <div class="map">
+      <span class="m">ABET-AI 1f · Systems &amp; AI/MLOps: AI 360 · AI 350</span>
+      <span class="m">ABET-AI 1g · Secure, ethical, responsible AI: AI 339 (required, early)</span>
+      <span class="m">ABET-AI 3 · Application area: AI 442 · AI 443</span>
+      <span class="m">ABET 5.b · Linear algebra &amp; optimization: AI 221</span>
+      <span class="m">SO-6 · Design &amp; evaluate AI solutions: Capstone + Signature courses</span>
+    </div>
+  </div>
+</section>
+
+<section>
+<h2>Reference Standards and Compliance</h2>
+<p class="sub">Every requirement the program answers to, what it demands, and where we stand</p>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;font-size:13px;color:#1F3864">
+<thead><tr style="background:#1F3864;color:#fff;text-align:left">
+<th style="padding:10px 12px">Reference</th><th style="padding:10px 12px">Nature</th><th style="padding:10px 12px">What it requires</th><th style="padding:10px 12px">Our position</th></tr></thead>
+<tbody>
+<tr><td style="padding:10px 12px;font-weight:700">KAU and FCIT requirements</td><td style="padding:10px 12px">Binding</td><td style="padding:10px 12px">Same structure as the new CS plan: 23 cr university, 42 cr college, 150 cr total, the three common semesters unchanged.</td><td style="padding:10px 12px;color:#2E7D32;font-weight:700">Met</td></tr>
+<tr style="background:#F4F8FF"><td style="padding:10px 12px;font-weight:700">NCAAA and NQF (Level 6)</td><td style="padding:10px 12px">Binding</td><td style="padding:10px 12px">Program specification with measurable learning outcomes across the three NQF domains, course specifications on the official form, and an assessment plan.</td><td style="padding:10px 12px;color:#0E616E;font-weight:700">Structurally met; documentation completed in the accreditation file</td></tr>
+<tr><td style="padding:10px 12px;font-weight:700">ETEC Academic Standards for AI Programs (2025, v2.0)</td><td style="padding:10px 12px">Binding</td><td style="padding:10px 12px">EKUs of at least 30 cr (11 mathematics and statistics, 6 physics, 4 chemistry, 2 project management and finance); computing KUs of at least 40 cr across eight GKUs with set weights (ML 26%, programming 20%); ten KLOs; capstone of at least 3 cr; field training of at least 8 weeks.</td><td style="padding:10px 12px;color:#0E616E;font-weight:700">Met in mathematics, computing, outcomes, capstone and training. Open: physics (6) and chemistry (4), a college-level decision</td></tr>
+<tr style="background:#F4F8FF"><td style="padding:10px 12px;font-weight:700">ABET AI/ML Program Criteria (approved by CAC July 2026; final approval 6 Nov 2026; effective Fall 2027)</td><td style="padding:10px 12px">International, optional</td><td style="padding:10px 12px">42 cr of AI and computing covering seven core topics (1a to 1g), advanced topics and at least one application area; 9 cr of mathematics and statistics (linear algebra, probability, statistical inference, optimization); AI-specific Student Outcome 6.</td><td style="padding:10px 12px;color:#2E7D32;font-weight:700">Met with a wide margin (67 cr major, 14 cr mathematics); apply after the program is running</td></tr>
+<tr><td style="padding:10px 12px;font-weight:700">ACM/IEEE-CS CS2023, AI Knowledge Area</td><td style="padding:10px 12px">Curricular reference</td><td style="padding:10px 12px">Eleven knowledge units and three suggested course packages: Artificial Intelligence, Machine Learning, Robotics.</td><td style="padding:10px 12px;color:#2E7D32;font-weight:700">Met: all three packages are required (CS 331, CS 332, AI 334)</td></tr>
+<tr style="background:#F4F8FF"><td style="padding:10px 12px;font-weight:700">Vision 2030 and the National Strategy for Data and AI (SDAIA)</td><td style="padding:10px 12px">National direction</td><td style="padding:10px 12px">National AI competencies, industry training, professional accreditation, and AI ethics principles.</td><td style="padding:10px 12px;color:#2E7D32;font-weight:700">Met: mandatory training, SDAIA principles inside AI 339, Arabic NLP unit inside AI 333</td></tr>
+</tbody></table></div>
+<p class="sub" style="margin-top:14px">Official source documents (all published):
+<a href="https://f.etec.gov.sa/j/Artificial_Intelligence.pdf" target="_blank" style="color:#C9A227;font-weight:700">ETEC AI Standards 2025 (PDF)</a> ·
+<a href="https://etec.gov.sa/l/ENCOS" target="_blank" style="color:#C9A227;font-weight:700">NQF 3rd edition</a> ·
+<a href="https://etec.gov.sa/en/centers/ncaaa" target="_blank" style="color:#C9A227;font-weight:700">NCAAA center</a> ·
+<a href="https://www.abet.org/wp-content/uploads/2025/12/2026-2027_CAC_Criteria.pdf" target="_blank" style="color:#C9A227;font-weight:700">ABET CAC Criteria 2026-2027 (PDF)</a> ·
+<a href="https://csab.org/wp-content/uploads/2026/07/2026-2027-Approved-Criteria-Changes.pdf" target="_blank" style="color:#C9A227;font-weight:700">ABET Approved Criteria Changes incl. AI/ML (PDF)</a> ·
+<a href="https://ieeecs-media.computer.org/media/education/reports/CS2023.pdf" target="_blank" style="color:#C9A227;font-weight:700">ACM/IEEE CS2023 full report (PDF)</a> ·
+<a href="https://docs.google.com/spreadsheets/d/1JMhNrsc6kdQJDgmsnEzFH1CuyqcCetbd/edit?usp=sharing" target="_blank" style="color:#C9A227;font-weight:700">CS2023 AI knowledge area mapping sheet</a> ·
+<a href="https://sdaia.gov.sa" target="_blank" style="color:#C9A227;font-weight:700">SDAIA</a></p>
+</section>
+<div class="modal" id="courseModal"><div class="modal-card">
+<button class="modal-close" onclick="document.getElementById('courseModal').classList.remove('open')">Close ✕</button>
+<div id="modalBody"></div></div></div>
+<footer>Course codes per the official Program Guide (synced with the latest CS numbering) · University requirements (languages, Islamic culture) distributed across semesters · Electives chosen from an 8-track pool (6 career roles + research + robotics)</footer>
+</div>
+
+<script>
+const C={trunk:'#E8EEF7',shared:'#C7D6EA',ai:'#9ED6CE',adv:'#5BBFB2',flag:'#0E616E',gold:'#C9A227',navy:'#1F3864'};
+const chipColor={trunk:['#E8EEF7','#1F3864'],shared:['#C7D6EA','#1F3864'],ai:['#9ED6CE','#0B3C36'],adv:['#5BBFB2','#fff'],flag:['#0E616E','#fff'],gold:['#C9A227','#241B04'],navy:['#1F3864','#fff']};
+const stages=[
+ {t:'Common Trunk',en:'S1–S3 · SHARED WITH CS',fill:C.trunk,ink:'#1F3864',
+  d:'Three semesters identical to Computer Science · Python, mathematics, logic and data structures. Gateway to major allocation.',
+  courses:[['CPIT 110 Programming & Problem Solving (Python)','trunk'],['MATH 110 Calculus','trunk'],['STAT 110 Statistics','trunk'],['IT 121 Intro to Computing','trunk'],['CS 101 Object-Oriented Programming','trunk'],['CS 121 Math for Computing','trunk'],['CS 202 Data Structures','trunk'],['CS 122 Discrete Structures','trunk'],['CIS 291 Computing Ethics','trunk'],['IT 122 + IT 123','trunk']],
+  gain:'By the end: writes real programs, masters logic, and qualifies for the AI major.'},
+ {t:'AI Toolkit',en:'S4 · FIRST AI SEMESTER',fill:C.ai,ink:'#0B3C36',
+  d:'First semester in the major · the tools before the battle: AI programming and AI mathematics.',
+  courses:[['AI 203 AI Programming Techniques (Python + ML frameworks)','ai'],['AI 221 Math Foundations for AI (linear algebra + optimization, NumPy labs)','ai'],['CS 224 Design & Analysis of Algorithms','shared'],['MATH 209 Calculus for CS','shared']],
+  gain:'Gains: the craft tools · NumPy and ML frameworks, plus the mathematical language models think in.'},
+ {t:'Classical AI & Conscience',en:'S5',fill:C.shared,ink:'#1F3864',
+  d:'Real AI at last: transparent search and reasoning · taken in parallel with when AI must be responsible.',
+  courses:[['CS 331 Artificial Intelligence (search · KR · reasoning)','shared'],['AI 339 Responsible AI: Ethics & Governance (SDAIA · NIST · EU)','ai'],['CS 351 Software Engineering','shared'],['PHYS 281 Physics Lab','shared']],
+  gain:'Gains: an engineer\'s mind and conscience together · a pairing no benchmarked program offers this early.'},
+ {t:'Learning & Data',en:'S6',fill:C.shared,ink:'#1F3864',
+  d:'The machine learns · and the secret is disciplined data and intelligent data stores.',
+  courses:[['CS 332 Machine Learning','shared'],['AI 342 Data-Centric AI (data quality & labeling)','ai'],['AI 341 Intelligent Databases (SQL + Vector DB + RAG)','ai'],['CIS 355 Software Project Management','trunk']],
+  gain:'Gains: the first model trained with her own hands · plus a rare skill: engineering the data that makes performance.'},
+ {t:'Advanced AI',en:'S7 · THE FRONTIER',fill:C.adv,ink:'#fff',
+  d:'The heart of the major: deep networks, the generative and agentic edge, and the infrastructure underneath.',
+  courses:[['AI 336 Deep Learning (+GPU lab)','adv'],['AI 335 Generative & Agentic AI','flag'],['AI 360 AI Systems & Networks (GPU · cloud · distribution)','ai'],['CIS 393 Workplace Skills','trunk']],
+  gain:'Gains: the frontier itself · AI 335 is a named course no local or global competitor offers.'},
+ {t:'Perception & Product',en:'S8',fill:C.flag,ink:'#fff',
+  d:'AI that sees, converses and moves · then becomes a product that ships.',
+  courses:[['AI 332 Computer Vision','adv'],['AI 333 NLP (+mandatory Arabic unit)','adv'],['AI 334 Embedded Systems & Robotics','adv'],['AI 350 AI Systems & Product Engineering (MLOps)','flag']],
+  gain:'Gains: the four senses plus the model-to-market skill · the exact gap employers report worldwide.'},
+ {t:'The Field',en:'SUMMER · FULL-TIME',fill:C.gold,ink:'#241B04',
+  d:'Full-time training after the toolkit is complete · useful to the host from week one.',
+  courses:[['CS 495 Summer Training (mandatory · full-time)','gold'],['Research route (e.g., KAUST) or industry route (e.g., UBTECH)','gold']],
+  gain:'Gains: the first real line on her CV · and a professional network before graduation.'},
+ {t:'Identity & Delivery',en:'S9–S10',fill:C.navy,ink:'#fff',
+  d:'The student chooses who she becomes: 4 track electives shape her path + a capstone with a real external stakeholder.',
+  courses:[['AI 498 Senior Project I (real stakeholder problem)','navy'],['AI 499 Senior Project II (build · evaluate · deploy · defend)','navy'],['4 electives from 8 tracks (6 career roles + research + robotics)','ai'],['2 free electives','trunk']],
+  gain:'Gains: a chosen professional identity and a working product in her portfolio · ready for day one at work.'}
+];
+const years=[
+ {t:'Year 1–1.5',en:'FOUNDATIONS · S1–S3',fill:C.trunk,ink:'#1F3864',stages:[0]},
+ {t:'Year 2',en:'TOOLKIT & CLASSICAL AI · S4–S5',fill:C.ai,ink:'#0B3C36',stages:[1,2]},
+ {t:'Year 3',en:'LEARNING & DEPTH · S6–S7',fill:C.adv,ink:'#fff',stages:[3,4]},
+ {t:'Year 4',en:'APPLICATION & PRODUCT · S8 + SUMMER',fill:C.flag,ink:'#fff',stages:[5,6]},
+ {t:'Year 5',en:'IDENTITY & DELIVERY · S9–S10',fill:C.navy,ink:'#fff',gold:1,stages:[7]}
+];
+const yearsRow=document.getElementById('years');
+const stageDrawer=document.getElementById('stageDrawer'),stageRow=document.getElementById('stageRow'),stageLabel=document.getElementById('stageLabel');
+const detail=document.getElementById('detail'),detailInner=document.getElementById('detailInner');
+let curY=-1,curS=-1;
+years.forEach((y,i)=>{
+  if(i>0){const a=document.createElement('div');a.className='arrow';a.textContent='→';yearsRow.appendChild(a);}
+  const b=document.createElement('button');b.className='tile';b.style.background=y.fill;b.style.color=y.ink;
+  if(y.gold)b.style.boxShadow='inset 0 0 0 3px #C9A227';
+  b.innerHTML=`<span class="num">${i+1}/5</span>${y.t}<small>${y.en}</small>`;
+  b.onclick=()=>openYear(i,b);yearsRow.appendChild(b);
+});
+function openYear(i,btn){
+  document.querySelectorAll('#years .tile').forEach(x=>x.classList.remove('active'));
+  detail.classList.remove('open');curS=-1;
+  if(curY===i){stageDrawer.classList.remove('open');curY=-1;return;}
+  curY=i;btn.classList.add('active');
+  const y=years[i];
+  stageLabel.textContent=`Map 2: levels of ${y.t} (click a level for its courses)`;
+  stageRow.innerHTML='';
+  y.stages.forEach(si=>{
+    const s=stages[si];
+    const b=document.createElement('button');b.className='tile';b.style.background=s.fill;b.style.color=s.ink;
+    b.innerHTML=`${s.t}<small>${s.en}</small>`;
+    b.onclick=()=>openStage(si,b);stageRow.appendChild(b);
+  });
+  stageDrawer.classList.remove('open');void stageDrawer.offsetWidth;stageDrawer.classList.add('open');
+}
+function openStage(si,btn){
+  document.querySelectorAll('#stageRow .tile').forEach(x=>x.classList.remove('active'));
+  if(curS===si){detail.classList.remove('open');curS=-1;return;}
+  curS=si;btn.classList.add('active');
+  const s=stages[si];
+  detailInner.innerHTML=`<h3>${s.t}</h3><div class="en">${s.en}</div>
+    <div style="font-size:14px;color:#334155">${s.d}</div>
+    <div class="chips">${s.courses.map(c=>{const[bg,fg]=chipColor[c[1]];return `<span class="chip${fg==='#fff'?' white':''}" style="background:${bg};color:${fg}">${c[0]}</span>`}).join('')}</div>
+    <div class="gain">${s.gain}</div>`;
+  detail.classList.remove('open');void detail.offsetWidth;detail.classList.add('open');
+}
+openYear(0,document.querySelector('#years .tile'));
+
+/* ===== map zoom ===== */
+const mapViewport=document.getElementById('mapViewport');
+const mapSvg=document.querySelector('#mapInner svg');
+const vb=mapSvg.viewBox.baseVal; const natW=vb.width, natH=vb.height;
+mapSvg.removeAttribute('height');
+let zoomPct=null; /* null = fit */
+function applyZoom(){
+  const fitW=mapViewport.clientWidth-16;
+  const w=zoomPct? natW*zoomPct : fitW;
+  mapSvg.setAttribute('width', w);
+  document.getElementById('zoomVal').textContent = zoomPct? Math.round(zoomPct*100)+'%' : 'Fit';
+}
+function zoomMap(d){
+  const fitW=mapViewport.clientWidth-16;
+  let cur=zoomPct ?? (fitW/natW);
+  cur=Math.min(3,Math.max(0.2,cur*(d>0?1.25:0.8)));
+  zoomPct=cur;applyZoom();
+}
+function zoomFit(){zoomPct=null;applyZoom();}
+function zoom100(){zoomPct=1;applyZoom();}
+window.addEventListener('resize',()=>{if(zoomPct===null)applyZoom();});
+applyZoom();
+
+/* ===== clickable course nodes ===== */
+const CB={
+ AI203:{t:'AI 203 · AI Programming Techniques',m:'Semester 4 · 4 cr (4 Th + 2 Tut) · Prereq: CPIT 110',
+  why:'ABET 5.a(1)(b): programming, data structures and algorithms. Industry tooling. Purpose-built, distinct from Java-based CS 203.',
+  bench:'CMU 15-112 · Alfaisal lab model',
+  top:'Python idioms, NumPy vectorized computing, pandas, data acquisition, matplotlib, scikit-learn workflow, PyTorch/TensorFlow tensors, environments and versioning, mini-project (90 h).',
+  note:'Not generic "advanced programming": the Python AI stack. Spec on file.'},
+ AI221:{t:'AI 221 · Mathematical Foundations for AI',m:'Semester 4 · 4 cr (3 Th + 2 Lab) · Prereq: CS 121, STAT 110',
+  why:'ABET 5.b names linear algebra, probability, inference and optimization. The one math course CS does not provide.',
+  bench:'MIT 18.C06 (Linear Algebra & Optimization) · Alfaisal MAT 212',
+  top:'Matrix algebra, eigen/SVD, gradients and multivariable calculus for ML, convexity, gradient descent, probability for ML, NumPy labs (75 h).',
+  note:'Taught applied in NumPy labs, not proofs. Hour-by-hour topics in the spec.'},
+ AI339:{t:'AI 339 · Responsible AI: Ethics, Governance & Society',m:'Semester 5 · 3 cr · Prereq: CIS 291 · Co-req: CS 331',
+  why:'ABET 5.a(1)(g) + NCAAA KLO-9 + NQF Values. Covers SDAIA principles and PDPL.',
+  bench:'NUS Responsible AI (required) · CMU 17-200',
+  top:'Ethical frameworks, bias and fairness, privacy/PDPL, governance (SDAIA, NIST RMF, EU AI Act), accountability and auditing, case studies (45 h).',
+  note:'Paired with the first AI course: engineer and conscience built together.'},
+ AI342:{t:'AI 342 · Data-Centric AI',m:'Semester 6 · 4 cr (3 Th + 2 Lab) · Prereq: AI 203',
+  why:'ABET 5.a(1)(c): data and knowledge engineering, a newly mandated topic.',
+  bench:'None of the four (predates them) · Global: Data-Centric AI movement (Stanford)',
+  top:'Data collection, cleaning and quality, labeling, augmentation and synthetic data, dataset shift and datasheets, EDA, feature engineering, data ethics, lab project (75 h). 40% project rule.',
+  note:'Added because ABET now requires it; the benchmarks have not caught up.'},
+ AI341:{t:'AI 341 · Intelligent Database Systems',m:'Semester 6 · 3 cr (3 Th + 2 Tut) · Prereq: CS 351',
+  why:'ABET 1c + market: the retrieval layer (vector DBs, RAG) behind LLM applications.',
+  bench:'Alfaisal SE 252 (classical core) · Global industry practice for the RAG layer',
+  top:'SQL in practice, design and normalization, transactions and indexing, NoSQL, vector databases and similarity search, embeddings and RAG, ML-assisted optimization (75 h).',
+  note:'Same foundation as CS 345 plus the layer generative AI actually needs.'},
+ AI336:{t:'AI 336 · Deep Learning',m:'Semester 7 · 4 cr (3 Th + 2 GPU Lab) · Prereq: CS 332',
+  why:'ABET 1d: ML including deep learning. CS2023 Advanced ML. The hinge for everything advanced.',
+  bench:'Alfaisal AI 447 · CMU deep learning',
+  top:'Backpropagation, optimization and regularization, CNNs, RNN/LSTM, attention and transformers, transfer learning, GPU practice, project (75 h). 40% project rule.',
+  note:'After CS 332 because deep builds on classical — the ordering all four use.'},
+ AI335:{t:'AI 335 · Generative AI and Agentic AI',m:'Semester 7 · 4 cr (3 Th + 2 GPU Lab) · Prereq: CS 332',
+  why:'ABET 1e + program signature: the fastest-growing AI job family.',
+  bench:'Generative: Alfaisal AI 455 · CMU 10-423. Agentic: none of the four · Global: Berkeley LLM-Agents',
+  top:'VAEs/GANs, diffusion, LLMs and pretraining, prompting, fine-tuning and alignment, agents: tools, memory, planning, multi-agent orchestration, safety (75 h). 40% project rule.',
+  note:'Half matched by two of the four; the agentic half is our documented first-mover lead.'},
+ AI360:{t:'AI 360 · Computing Systems and Networks for AI',m:'Semester 7 · 3 cr (3 Th + 2 Tut) · Prereq: AI 203',
+  why:'ABET 5.a(1)(f) verbatim: architecture, infrastructure, AI/MLOps, workflows.',
+  bench:'NUS Machine Learning Systems',
+  top:'Systems essentials for AI workloads, concurrency, GPUs and accelerators, storage, networking for AI services, distributed basics, containers, cloud (75 h).',
+  note:'Consolidates the essence of CS 313/361/371 through the AI-workload lens.'},
+ AI332:{t:'AI 332 · Computer Vision',m:'Semester 8 · 4 cr (3 Th + 2 GPU Lab) · Prereq: AI 336',
+  why:'CS2023 CV area + market demand for perception roles.',
+  bench:'CMU 16-385 · Alfaisal AI 317',
+  top:'Image formation, features, CNN architectures, detection, segmentation, vision transformers, video, deployment, project (75 h). 40% project rule.',
+  note:'Required core at CMU and NUS as well.'},
+ AI333:{t:'AI 333 · Natural Language Processing (+ Arabic unit)',m:'Semester 8 · 3 cr · Prereq: CS 332',
+  why:'CS2023 NLP area + sovereign readiness: mandatory 5-hour Arabic-NLP unit.',
+  bench:'CMU 11-411 · Alfaisal AI 480 · Arabic unit: none of the four',
+  top:'Tokenization, language models, embeddings, sequence labeling, transformers, fine-tuning, applications, evaluation, ethics, Arabic unit: diacritics, morphology, dialects (45 h).',
+  note:'The Arabic unit is a national gap no foreign program addresses.'},
+ AI334:{t:'AI 334 · Embedded Systems and Robotics',m:'Semester 8 · 4 cr (3 Th + 2 HW Lab) · Prereq: CS 332, AI 336',
+  why:'CS2023 robotics + smart-manufacturing readiness; gateway to the robotics track.',
+  bench:'CMU robotics cluster',
+  top:'Embedded platforms, sensors and actuators, real-time basics, kinematics and control, perception for robots, edge AI deployment, ROS labs, safety, mini-project (75 h).',
+  note:'Completes the four senses of S8 and opens the industrial partnership track.'},
+ AI350:{t:'AI 350 · AI Systems and Product Engineering',m:'Semester 8 · 4 cr (3 Th + 2 Cloud Lab) · Prereq: AI 336, CS 351',
+  why:'ABET 5.a(1)(f): AI/MLOps and workflows. Closes the "trains models, cannot ship them" gap.',
+  bench:'CMU Design of AI Products · NUS ML Systems',
+  top:'ML system design, serving via APIs and containers, CI/CD, experiment tracking, monitoring and drift, scaling and cost, product discovery, UX, team product build (75 h). 40% rule.',
+  note:'A product course because ABET 1f demands it verbatim.'},
+ AI498:{t:'AI 498 · Senior Project I',m:'Semester 9 · 3 cr · Prereq: AI 350, AI 342, AI 341, AI 360, AI 339',
+  why:'ABET comprehensive project + NCAAA experiential learning.',
+  bench:'Alfaisal Capstone I · CMU · NUS FYP — stronger than Alfaisal, whose capstone runs alongside Deep Learning',
+  top:'Real external-stakeholder problem, requirements and data, modeling and evaluation design, validated prototype plan, panel reviews (45 h).',
+  note:'Five prerequisites = the five threads of a complete product converging.'},
+ AI499:{t:'AI 499 · Senior Project II',m:'Semester 10 · 3 cr · Prereq: AI 498',
+  why:'Completion: build, evaluate with users, deploy, document, defend.',
+  bench:'Alfaisal Capstone II · CMU · NUS',
+  top:'Implementation sprints, user testing, deployment and packaging, documentation, final defense (45 h).',
+  note:'The student leaves with a working, deployed, defended system.'},
+};
+const SHARED={CPIT110:'Programming & Problem Solving (Python)',MATH110:'Calculus',STAT110:'General Statistics',IT121:'Intro to Computing',CS101:'Object-Oriented Programming',CS121:'Math for Computing',IT122:'Emerging Technologies',PHYS110:'General Physics',CS202:'Data Structures',CS122:'Discrete Structures',CIS291:'Computing Ethics',IT123:'Technical Communication',CS224:'Design & Analysis of Algorithms',MATH209:'Calculus for CS',CS331:'Artificial Intelligence',CS351:'Software Engineering',PHYS281:'Physics Lab',CS332:'Machine Learning',CIS355:'Software Project Management',CIS393:'Workplace Skills',CS495:'Summer Training (mandatory, full-time)'};
+const BL=[
+ [/CMU 15-112/,'https://www.cs.cmu.edu/~112/'],
+ [/MIT 18\.C06/,'https://computing.mit.edu/cross-cutting/common-ground-for-computing-education/common-ground-subjects/c06-linear-algebra-optimization/'],
+ [/NUS Responsible AI/,'https://nusmods.com/courses/CS3268/responsible-artificial-intelligence'],
+ [/CMU 17-200/,'http://coursecatalog.web.cmu.edu/schools-colleges/schoolofcomputerscience/'],
+ [/CMU 10-423/,'https://www.cs.cmu.edu/~mgormley/courses/10423/'],
+ [/CMU 16-385/,'https://16385.courses.cs.cmu.edu/'],
+ [/CMU 11-411/,'http://coursecatalog.web.cmu.edu/schools-colleges/schoolofcomputerscience/'],
+ [/CMU deep learning/,'https://deeplearning.cs.cmu.edu/'],
+ [/Berkeley LLM-Agents/,'https://llmagents-learning.org/'],
+ [/NUS Machine Learning Systems/,'https://nusmods.com/courses/CS4262/machine-learning-systems'],
+ [/NUS ML Systems/,'https://nusmods.com/courses/CS4262/machine-learning-systems'],
+ [/NUS FYP/,'https://www.comp.nus.edu.sg/programmes/ug/project/'],
+ [/CMU Design of AI Products/,'https://www.cs.cmu.edu/bs-in-artificial-intelligence/curriculum'],
+ [/CMU robotics cluster/,'https://www.cs.cmu.edu/bs-in-artificial-intelligence/curriculum'],
+ [/Alfaisal (?:SE|AI|MAT) \d+/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
+ [/Alfaisal Capstone I+/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
+ [/Alfaisal lab model/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
+ [/\bCMU\b/,'https://www.cs.cmu.edu/bs-in-artificial-intelligence/curriculum'],
+ [/\bMIT\b/,'https://www.eecs.mit.edu/academics/undergraduate-programs/curriculum/6-4-artificial-intelligence-and-decision-making/'],
+ [/\bNUS\b/,'https://www.comp.nus.edu.sg/programmes/ug/ai/curr/'],
+ [/\bAlfaisal\b/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
+];
+function linkBench(t){
+  const keep=[];
+  const put=(url,txt)=>{keep.push(`<a href="${url}" target="_blank" style="color:#0E616E;font-weight:700;text-decoration:underline">${txt}</a>`);return '\u0001'+(keep.length-1)+'\u0001';};
+  BL.forEach(([re,url])=>{t=t.replace(re,m=>put(url,m));});
+  return t.replace(/\u0001(\d+)\u0001/g,(m,i)=>keep[+i]);
+}
+function showCourse(id){
+  const mb=document.getElementById('modalBody');
+  if(CB[id]){const c=CB[id];
+    mb.innerHTML=`<h3>${c.t}</h3><div class="meta">${c.m}</div>
+    <h4>Why it exists</h4><p>${c.why}</p>
+    <h4>Benchmark</h4><p>${linkBench(c.bench)}</p>
+    <h4>Content</h4><p>${c.top}</p>
+    <div class="note">${c.note}</div>`;
+  }else if(SHARED[id]){
+    mb.innerHTML=`<h3>${id.replace(/(\d)/,' $1')} · ${SHARED[id]}</h3>
+    <div class="meta">Shared course · taught from the CS/College catalog with its existing approved specification</div>
+    <p>This course is common with the Computer Science program (resource sharing by design). Its specification is owned and maintained by the offering department.</p>`;
+  }else if(id.startsWith('EL')){
+    mb.innerHTML=`<h3>Elective Course slot</h3><div class="meta">Semesters 9 and 10 · 3 cr each · 4 slots</div>
+    <p>Chosen from the 26-course elective pool (AI 430 to AI 494), organized as Research, Robotics, and six career tracks. Each elective has a full specification on file.</p>`;
+  }else if(id.startsWith('FR')){
+    mb.innerHTML=`<h3>Free / University Requirement</h3><div class="meta">University electives per KAU regulations</div>
+    <p>Selected from the university-wide free-elective list, identical to the CS program arrangement.</p>`;
+  }else return;
+  document.getElementById('courseModal').classList.add('open');
+}
+document.querySelectorAll('#mapInner g.node').forEach(g=>{
+  const t=g.querySelector('title'); if(!t)return;
+  const id=t.textContent.trim();
+  g.addEventListener('click',()=>showCourse(id));
+});
+document.getElementById('courseModal').addEventListener('click',e=>{if(e.target.id==='courseModal')e.target.classList.remove('open');});
+const bm=[
+ {n:'Carnegie Mellon',url:'https://www.cs.cmu.edu/bs-in-artificial-intelligence/',tag:'First undergraduate AI degree in the United States (2018)',
+  them:['A dedicated AI degree on a rigorous CS spine; classical AI is taught before machine learning','NLP, computer vision and ethics are required; electives sit in named clusters'],
+  took:['The teaching order: transparent classical AI before machine learning','NLP, vision and ethics as required core, not electives'],
+  diff:['Generative and agentic AI required here (ABET 1e, market demand)','Product/MLOps layer and mandatory field training here (ABET 1f, ETEC 3.3)']},
+ {n:'MIT',url:'https://www.eecs.mit.edu/academics/undergraduate-programs/curriculum/6-4-artificial-intelligence-and-decision-making/',tag:'The world\'s leading technology institute · AI and Decision Making, 6-4 (2022)',
+  them:['Learning-first spine built on 18.C06, one integrated linear algebra and optimization course','Depth composed from baskets: vision, language, robotics, decision-making'],
+  took:['AI 221 is modeled on 18.C06: integrated mathematics built for ML','The baskets idea shaped our S8 level: vision, language, robotics, product'],
+  diff:['Classical AI comes first here, not learning-first (ETEC GKU 6, sounder pedagogy)','Mandatory training and a product layer here (ETEC 3.3, ABET 1f)']},
+ {n:'NUS Singapore',url:'https://www.comp.nus.edu.sg/programmes/ug/ai/',tag:'Asia\'s top-ranked university · Bachelor of Computing in AI',
+  them:['Common computing trunk, then allocation into the AI degree','Responsible AI is required; industry experience is a graduation requirement'],
+  took:['The enrollment architecture: shared trunk S1 to S3, then allocation into the major','Responsible AI as a required course (AI 339) and mandatory training (CS 495)'],
+  diff:['Advanced depth is required here, elective there (ETEC weights, ABET 42-hour list)','Arabic NLP unit and Data-Centric AI course here (sovereign need, ABET 1c)']},
+ {n:'Alfaisal',url:'https://coe.alfaisal.edu/en/ai-home',tag:'The closest Saudi peer program · BS in AI, Riyadh (133 cr)',
+  them:['Software-engineering rooted core, then AI depth: vision, deep learning, generative','Three named tracks; zero-credit internship; two-semester capstone'],
+  took:['Labs embedded inside the technical courses','The two-semester capstone with the summer internship placed before it'],
+  diff:['Capstone opens here only after the five build courses; runs alongside deep learning there','Agentic AI and MLOps required here; 8 career tracks against 3 (ABET 1f, SDAIA roles)']}
+];
+const bg=document.getElementById('bgrid');
+bm.forEach(b=>{
+  const d=document.createElement('div');d.className='bcard';
+  d.innerHTML=`<h3>${b.n}</h3><div class="tag">${b.tag} · <a href="${b.url}" target="_blank" style="color:#C9A227;font-weight:700;text-decoration:underline">Official program page</a></div>
+   <h4>Their model</h4><ul>${b.them.map(x=>`<li>${x}</li>`).join('')}</ul>
+   <h4>What we adopted from them</h4><ul>${b.took.map(x=>`<li>${x}</li>`).join('')}</ul>
+   <h4 class="diff">Where we differ, and why</h4><ul>${b.diff.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  bg.appendChild(d);
+});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.15});
+document.querySelectorAll('.bcard,.abet').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
