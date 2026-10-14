@@ -123,7 +123,18 @@ The program aims to prepare graduates who can translate AI methods into useful, 
 </section>
 
 <section>
-  <h2>The Journey: click a year, then a level</h2>
+  <h2>The Student Journey</h2>
+<p class="sub">Five years in three minutes: from the shared trunk to a deployed, defended AI product</p>
+<div style="background:#fff;border-radius:18px;padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.35)">
+<video controls preload="metadata" style="width:100%;border-radius:12px;display:block">
+<source src="Student_Journey_web.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+</div>
+</section>
+
+<section>
+<h2>The Journey: click a year, then a level</h2>
   <p class="hint">Map 1: five years &nbsp;&rarr;&nbsp; Map 2: its levels &nbsp;&rarr;&nbsp; course details</p>
   <div class="row" id="years"></div>
   <div class="drawer" id="stageDrawer">
@@ -859,7 +870,7 @@ applyZoom();
 const CB={
  AI203:{t:'AI 203 · AI Programming Techniques',m:'Semester 4 · 4 cr (4 Th + 2 Tut) · Prereq: CPIT 110',
   why:'ABET 5.a(1)(b): programming, data structures and algorithms. Industry tooling. Purpose-built, distinct from Java-based CS 203.',
-  bench:'CMU 15-112 · Alfaisal lab model',
+  bench:'General Python already sits in the trunk (CPIT 110, semester 1). AI 203 is the layer above it: the AI stack (NumPy, pandas, scikit-learn, PyTorch). National reference: the KAUST Academy AI Specialization gates the Kingdom AI talent pipeline on exactly this layer, Python for AI plus data handling, and its published placement exam tests pandas, Python classes and linear algebra. Our graduates enter that pipeline ready.',
   top:'Python idioms, NumPy vectorized computing, pandas, data acquisition, matplotlib, scikit-learn workflow, PyTorch/TensorFlow tensors, environments and versioning, mini-project (90 h).',
   note:'Not generic "advanced programming": the Python AI stack. Spec on file.'},
  AI221:{t:'AI 221 · Mathematical Foundations for AI',m:'Semester 4 · 4 cr (3 Th + 2 Lab) · Prereq: CS 121, STAT 110',
@@ -874,12 +885,12 @@ const CB={
   note:'Paired with the first AI course: engineer and conscience built together.'},
  AI342:{t:'AI 342 · Data-Centric AI',m:'Semester 6 · 4 cr (3 Th + 2 Lab) · Prereq: AI 203',
   why:'ABET 5.a(1)(c): data and knowledge engineering, a newly mandated topic.',
-  bench:'None of the four (predates them) · Global: Data-Centric AI movement (Stanford)',
+  bench:'None of the four requires it (their plans predate ABET 1c). Global reference: MIT Introduction to Data-Centric AI, the first dedicated course on the discipline: label errors, dataset creation and curation, distribution shift, data curation for LLMs.',
   top:'Data collection, cleaning and quality, labeling, augmentation and synthetic data, dataset shift and datasheets, EDA, feature engineering, data ethics, lab project (75 h). 40% project rule.',
   note:'Added because ABET now requires it; the benchmarks have not caught up.'},
  AI341:{t:'AI 341 · Intelligent Database Systems',m:'Semester 6 · 3 cr (3 Th + 2 Tut) · Prereq: CS 351',
   why:'ABET 1c + market: the retrieval layer (vector DBs, RAG) behind LLM applications.',
-  bench:'Alfaisal SE 252 (classical core) · Global industry practice for the RAG layer',
+  bench:'Classical core: Alfaisal SE 252 and CMU 15-445, whose current syllabus already lists vector indexes. The retrieval layer (embeddings, RAG): CMU 11-442 Search Engines covers retrieval-augmented generation explicitly. None of the four requires this layer; we make it core.',
   top:'SQL in practice, design and normalization, transactions and indexing, NoSQL, vector databases and similarity search, embeddings and RAG, ML-assisted optimization (75 h).',
   note:'Same foundation as CS 345 plus the layer generative AI actually needs.'},
  AI336:{t:'AI 336 · Deep Learning',m:'Semester 7 · 4 cr (3 Th + 2 GPU Lab) · Prereq: CS 332',
@@ -893,10 +904,10 @@ const CB={
   top:'VAEs/GANs, diffusion, LLMs and pretraining, prompting, fine-tuning and alignment, agents: tools, memory, planning, multi-agent orchestration, safety (75 h). 40% project rule.',
   note:'Half matched by two of the four; the agentic half is our documented first-mover lead.'},
  AI360:{t:'AI 360 · Computing Systems and Networks for AI',m:'Semester 7 · 3 cr (3 Th + 2 Tut) · Prereq: AI 203',
-  why:'ABET 5.a(1)(f) verbatim: architecture, infrastructure, AI/MLOps, workflows.',
+  why:'Two mandatory ETEC units the plan otherwise lacked: operating systems principles (SKU 3.2, 5%) and networking (SKU 4.1, 5%), with security topics supporting SKU 8.2; the national graduate exam builds on these units. Also ABET 5.a(1)(f) verbatim: architecture, infrastructure, AI/MLOps, workflows.',
   bench:'NUS Machine Learning Systems',
   top:'Systems essentials for AI workloads, concurrency, GPUs and accelerators, storage, networking for AI services, distributed basics, containers, cloud (75 h).',
-  note:'Consolidates the essence of CS 313/361/371 through the AI-workload lens.'},
+  note:'No standalone OS or networks course, by design: topics 1, 2 and 7 (24 h) deliver the ETEC operating-systems unit (SKU 3.2) and topics 5 and 6 (20 h) deliver the networking unit (SKU 4.1). ETEC itself states a knowledge unit need not be an independent course; one course may cover several units. NUS requires an OS course before its ML Systems elective; we embed that layer, required, for every student. Took the S7 slot of AI for Cybersecurity, which moved to the security track electives.'},
  AI332:{t:'AI 332 · Computer Vision',m:'Semester 8 · 4 cr (3 Th + 2 GPU Lab) · Prereq: AI 336',
   why:'CS2023 CV area + market demand for perception roles.',
   bench:'CMU 16-385 · Alfaisal AI 317',
@@ -909,7 +920,7 @@ const CB={
   note:'The Arabic unit is a national gap no foreign program addresses.'},
  AI334:{t:'AI 334 · Embedded Systems and Robotics',m:'Semester 8 · 4 cr (3 Th + 2 HW Lab) · Prereq: CS 332, AI 336',
   why:'CS2023 robotics + smart-manufacturing readiness; gateway to the robotics track.',
-  bench:'CMU robotics cluster',
+  bench:'NUS CS4278 Intelligent Robots: Algorithms and Systems, on the required electives list of their AI degree. The same layer sits in the Robotics courses of Carnegie Mellon (16-350, 16-362, 16-384) and in Robotics: Science and Systems at the Massachusetts Institute of Technology (6.4200).',
   top:'Embedded platforms, sensors and actuators, real-time basics, kinematics and control, perception for robots, edge AI deployment, ROS labs, safety, mini-project (75 h).',
   note:'Completes the four senses of S8 and opens the industrial partnership track.'},
  AI350:{t:'AI 350 · AI Systems and Product Engineering',m:'Semester 8 · 4 cr (3 Th + 2 Cloud Lab) · Prereq: AI 336, CS 351',
@@ -930,27 +941,29 @@ const CB={
 };
 const SHARED={CPIT110:'Programming & Problem Solving (Python)',MATH110:'Calculus',STAT110:'General Statistics',IT121:'Intro to Computing',CS101:'Object-Oriented Programming',CS121:'Math for Computing',IT122:'Emerging Technologies',PHYS110:'General Physics',CS202:'Data Structures',CS122:'Discrete Structures',CIS291:'Computing Ethics',IT123:'Technical Communication',CS224:'Design & Analysis of Algorithms',MATH209:'Calculus for CS',CS331:'Artificial Intelligence',CS351:'Software Engineering',PHYS281:'Physics Lab',CS332:'Machine Learning',CIS355:'Software Project Management',CIS393:'Workplace Skills',CS495:'Summer Training (mandatory, full-time)'};
 const BL=[
+ [/NUS CS4278 Intelligent Robots/,'https://nusmods.com/courses/CS4278'],
+ [/CMU 15-445/,'https://15445.courses.cs.cmu.edu/'],
+ [/CMU 11-442 Search Engines/,'https://boston.lti.cs.cmu.edu/classes/11-642/'],
+ [/MIT Introduction to Data-Centric AI/,'https://dcai.csail.mit.edu/'],
+ [/KAUST Academy AI Specialization/,'https://academy.kaust.edu.sa/program/university-students/ai-specialization/'],
  [/CMU 15-112/,'https://www.cs.cmu.edu/~112/'],
  [/MIT 18\.C06/,'https://computing.mit.edu/cross-cutting/common-ground-for-computing-education/common-ground-subjects/c06-linear-algebra-optimization/'],
  [/NUS Responsible AI/,'https://nusmods.com/courses/CS3268/responsible-artificial-intelligence'],
- [/CMU 17-200/,'http://coursecatalog.web.cmu.edu/schools-colleges/schoolofcomputerscience/'],
+ [/CMU 17-200/,'https://www.cmu.edu/ideas-social-cybersecurity/courses/17-200.html'],
  [/CMU 10-423/,'https://www.cs.cmu.edu/~mgormley/courses/10423/'],
  [/CMU 16-385/,'https://16385.courses.cs.cmu.edu/'],
- [/CMU 11-411/,'http://coursecatalog.web.cmu.edu/schools-colleges/schoolofcomputerscience/'],
+ [/CMU 11-411/,'https://www.cs.cmu.edu/~ehn/11-411'],
  [/CMU deep learning/,'https://deeplearning.cs.cmu.edu/'],
  [/Berkeley LLM-Agents/,'https://llmagents-learning.org/'],
  [/NUS Machine Learning Systems/,'https://nusmods.com/courses/CS4262/machine-learning-systems'],
  [/NUS ML Systems/,'https://nusmods.com/courses/CS4262/machine-learning-systems'],
- [/NUS FYP/,'https://www.comp.nus.edu.sg/programmes/ug/project/'],
- [/CMU Design of AI Products/,'https://www.cs.cmu.edu/bs-in-artificial-intelligence/curriculum'],
- [/CMU robotics cluster/,'https://www.cs.cmu.edu/bs-in-artificial-intelligence/curriculum'],
- [/Alfaisal (?:SE|AI|MAT) \d+/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
- [/Alfaisal Capstone I+/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
- [/Alfaisal lab model/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
- [/\bCMU\b/,'https://www.cs.cmu.edu/bs-in-artificial-intelligence/curriculum'],
- [/\bMIT\b/,'https://www.eecs.mit.edu/academics/undergraduate-programs/curriculum/6-4-artificial-intelligence-and-decision-making/'],
- [/\bNUS\b/,'https://www.comp.nus.edu.sg/programmes/ug/ai/curr/'],
- [/\bAlfaisal\b/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
+ [/CMU Design of AI Products/,'https://www.hcii.cmu.edu/course/design-ai-products-and-services'],
+ [/Alfaisal AI 447/,'https://catalog.alfaisal.edu/bachelor-of-artificial-intelligence/ai-447'],
+ [/Alfaisal AI 455/,'https://catalog.alfaisal.edu/bachelor-of-artificial-intelligence/ai-455'],
+ [/Alfaisal AI 317/,'https://catalog.alfaisal.edu/bachelor-of-artificial-intelligence/ai-317'],
+ [/Alfaisal AI 480/,'https://catalog.alfaisal.edu/bachelor-of-artificial-intelligence/ai-480'],
+ [/Alfaisal SE 252/,'https://catalog.alfaisal.edu/software-engineering/se-252'],
+ [/Alfaisal MAT 212/,'https://coe.alfaisal.edu/en/ai-curriculum-sp'],
 ];
 function linkBench(t){
   const keep=[];
@@ -963,7 +976,7 @@ function showCourse(id){
   if(CB[id]){const c=CB[id];
     mb.innerHTML=`<h3>${c.t}</h3><div class="meta">${c.m}</div>
     <h4>Why it exists</h4><p>${c.why}</p>
-    <h4>Benchmark</h4><p>${linkBench(c.bench)}</p>
+    <h4>Benchmark</h4><p>${(id==='AI498'||id==='AI499')?c.bench:linkBench(c.bench)}</p>
     <h4>Content</h4><p>${c.top}</p>
     <div class="note">${c.note}</div>`;
   }else if(SHARED[id]){
